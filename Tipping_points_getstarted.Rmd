@@ -143,11 +143,11 @@ This document provides an overview of accessing, plotting, and creating Tipping 
 [ ADD}
 ]
 
-# Tipping Point Methods{.tabset}
+# Tipping Point Methods
 
-*Summary*
+*Summary* Text TBA
 
-## Threshold analysis
+## Threshold analysis{.tabset}
 
 ### Thresholds summary
 
@@ -437,7 +437,8 @@ Let's first explore the tipping point calcaultions using Pacific cod Biomass for
 ```
 
 
-## Integrative Resilience Analysis' (IRA) 
+
+## Integrative Resilience Analysis' (IRA){.tabset}
 
 ### IRA summary
 Integrative Resilience Analysis' (IRA) to two case studies: Western Mediterranean and Iberian Seas in the Atlantic (["Hidalgo et al 2022"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648), ["Polo et al. 2022"](https://academic.oup.com/icesjms/article/79/7/2017/6648917)). 
@@ -445,25 +446,55 @@ Integrative Resilience Analysis' (IRA) to two case studies: Western Mediterranea
 From Hidalgo et al. 2022:
 "The IRA is a three-step methodological framework which applies the concepts of resilience and folded stability landscapes in an empirical multivariate context through the combination of multivariate analysis, non-additive modelling and a resilience assessment (Vasilakopoulos et al., ["2017"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0042)). This way, the IRA elucidates the system dynamics and shift mechanisms in response to external stressors."
 
-From Polov et al. 2022:
+From Polo et al. 2022:
 "In the IRA framework, the relationship between PCsys and its drivers is assessed using PCsys as response variable in generalized additive models (GAMs) and threshold-GAMs (TGAMs) (Cianelli et al., 2004). Each of the four stressors with 0, 1, and 2 years of lag were used as explanatory variables in separate models. Testing potential lagged effect of the stressors was designed to detect a potential delayed response of the sampled biomass by species. GAMs are models that assume additive and stationary relationships between the response and explanatory variables while TGAMs are GAMs adjusted to account for abrupt changes in the response mechanism (Ciannelli et al., 2004). The basic GAM function used is included in R package mgcv (Wood, 2011). The “genuine” cross-validatory squared prediction error (gCV), a modification of generalized cross validation proposed by Cianelli et al. (2004) that makes the goodness of fit of GAMs and TGAMs comparable, was computed for model selection and estimation of the threshold year. "
 
 The IRA was carried out in R (R Core Team, 2019) using packages vegan (Oksanen et al., ["2019"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0027)), mgcv (Wood, ["2017"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0045)) and akima (Akima et al., ["2015"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0001)).
 
-1. As a first step, a PCA was applied to the time-species matrix of each studied area to identify the main modes of community variability. The PCAs were based on the correlation matrices of the species’ biomasses, following log-transformation.  
-2. The sequential regime shift detection method (STARS), modified to account for temporal autocorrelation (Rodionov, 2006), was applied to detect significant shifts in the mean values of PC1 and PC2 of the optimal PCAs. STARS estimates a Regime Shift Index (RSI), that is, a cumulative sum of normalized anomalies relative to each value of the time series analysed, and uses it to test the hypothesis of a regime shift occurring in that year (Rodionov, 2006). Here, we used a cut-off length of 3 years and a significant probability threshold of p = 0.05.
+### Ira Stepwise approach
 
-3. Apply GAM and TGAM with lags 0-2 years:
-  * fit 18 GAMs and 18 TGAMs (3 stressors × 2 seasons × 3 lags) for each system, using either PC1 or PC2 as a response variable. To compare the goodness of fit of GAMs and TGAMs and select the optimal model, we computed the ‘genuine’ cross-validation squared prediction error (genuine CV; gCV), which accounts for the estimation of the threshold line and the estimation of the degrees of freedom for the functions appearing in all additive and non-additive formulations (Ciannelli et al., 2004).   
-  *  To investigate the type of the relationship between the biological system, as captured by PC1 or PC2, and each of the environmental stressors (winter and spring Chl a, SST and RHI), the fits of relevant generalized additive models (GAMs) and non-additive threshold GAMs (TGAMs) at 0- to 2-time lags were compared. The effect of the stressors on the system was examined at 0- to 2-year lags to account for a potential delay in the environmental effect on the community sampled given that environmental effects typically influence spawning and early life stages, while the sampled biomass is usually dominated by specimens older than 0 years old.  
-  *  A GAM describes a system that changes in a continuous way in response to the corresponding change of its stressor(s), while a TGAM represents a system response curve that is folded backwards, forming a fold bifurcation with two tipping points (Figure S1).  
+0. Load data files
+
+```{R IRA_STEP0,eval=F,include=T,echo=T, results='hide',message=FALSE}
+# TBA
+```
+
+1. Apply PCA to the time-species matrix of each studied area to identify the main modes of community variability.PCAs are based on the correlation matrices of the species’ biomasses, following log-transformation.  
+
+```{R IRA_STEP1,eval=F,include=T,echo=T, results='hide',message=FALSE}
+# TBA
+```
+
+2. Sequential regime shift detection method (STARS), modified to account for temporal autocorrelation is used to detect significant shifts in the mean values of PC1 and PC2. As stated in Hidalgo et al. 2022 *"STARS estimates a Regime Shift Index (RSI), that is, a cumulative sum of normalized anomalies relative to each value of the time series analysed, and uses it to test the hypothesis of a regime shift occurring in that year (Rodionov, 2006)"*. Hidalgo et al. 2022 use a cut-off length of 3 years and a significant probability threshold of p = 0.05' Polo et al. 2022 used cut-off length of 15 years.  
+
+```{R IRA_STEP2,eval=F,include=T,echo=T, results='hide',message=FALSE}
+# TBA
+```
+
+3. Apply GAM and TGAM with lags 0-2 years.  Hidalgo et al. 2022 describes the two as *" A GAM describes a system that changes in a continuous way in response to the corresponding change of its stressor(s), while a TGAM represents a system response curve that is folded backwards, forming a fold bifurcation with two tipping points (Figure S1)."*. They further used the following methods:
+  3.1. *"fit 18 GAMs and 18 TGAMs (3 stressors × 2 seasons × 3 lags) for each system, using either PC1 or PC2 as a response variable."*. The fits of relevant generalized additive models (GAMs) and non-additive threshold GAMs (TGAMs) at 0- to 2-time lags response variable (PC1 or PC2, normalized) to stressors (normalized) were compared.*"The effect of the stressors on the system was examined at 0- to 2-year lags to account for a potential delay in the environmental effect on the community sampled given that environmental effects typically influence spawning and early life stages, while the sampled biomass is usually dominated by specimens older than 0 years old."*. 
+  3.2. *"Compute the ‘genuine’ cross-validation squared prediction error (genuine CV; gCV), which accounts for the estimation of the threshold line and the estimation of the degrees of freedom for the functions appearing in all additive and non-additive formulations (Ciannelli et al., 2004)"* in order to evaluate goodness of fit of GAMs and TGAMs.  
   
-4. To calculate the position of the tipping point of each regime along the trajectory of its respective attractor, the x-coordinates of the tipping points were set so as to ensure that the lowest Resy estimate within each regime was equal to zero. Finally, Resy was scaled by dividing with the maximum value observed to calculate relative resilience (rResy). The stability landscape with its alternate basins of attraction emerged through linear interpolation of all rResy values onto a 100 × 100 grid.  
+```{R IRA_STEP3,eval=F,include=T,echo=T, results='hide',message=FALSE}
+# TBA
+# 3.1. fit Tgam and GAMS PC~stressor system
+# ------------------------------------
 
-Scale response and PC " both the environmental stressor and the system PC were standardized (mean of 0 and standard deviation of 1; Vasilakopoulos et al., 2017)"
+# 3.2. *"Compute the genuine CV; gCV
+# ------------------------------------
 
+```
 
-## Stochastic cusp modelling (SCM)
+4. Calculate the position of the tipping point of each regime along the trajectory of its respective attractor. Note that *"the x-coordinates of the tipping points were set so as to ensure that the lowest Resy estimate within each regime was equal to zero...The stability landscape with its alternate basins of attraction emerged through linear interpolation of all rResy values onto a 100 × 100 grid."* Resy was scaled by dividing with the maximum value observed to calculate relative resilience ($rRes_y$):  
+$$rRes_y = Res_y/max(Res_y)$$  
+```{R IRA_STEP4,eval=F,include=T,echo=T, results='hide',message=FALSE}
+# TBA
+```
+
+ 
+### plot results
+
+## Stochastic cusp modelling (SCM){.tabset}
 
 ### SCM Suumary
 From Möllmann et al. ["2021"](https://doi.org/10.1038/s41598-021-93843-z):
