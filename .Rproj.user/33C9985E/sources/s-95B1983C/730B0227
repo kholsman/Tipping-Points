@@ -1,0 +1,26 @@
+{
+    "id": "730B0227",
+    "path": "D:/GitHub_cloud/Tipping-Points/R/packages.R",
+    "project_path": "R/packages.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1680557238031.0,
+    "source_on_save": true,
+    "relative_order": 4,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "21,15",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1680585952,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1680585950993,
+    "read_only": false,
+    "read_only_alternatives": []
+}

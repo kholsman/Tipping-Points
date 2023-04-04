@@ -1,0 +1,254 @@
+"0",""
+"0","   source(""R/make.R"")  # set up the Rcode and load packages and data"
+"2","Warning:"
+"2"," package ‘vegan’ was built under R version 4.1.3
+"
+"2","Loading required package: permute
+"
+"2","Warning:"
+"2"," package ‘permute’ was built under R version 4.1.3
+"
+"2","Loading required package: lattice
+"
+"2","This is vegan 2.6-4
+"
+"2","Loading required package: nlme
+"
+"2","This is mgcv 1.8-38. For overview type 'help(""mgcv-package"")'.
+"
+"2","Warning:"
+"2"," package ‘akima’ was built under R version 4.1.3
+"
+"2","Loading required package: usethis
+"
+"2","
+Attaching package: ‘devtools’
+
+"
+"2","The following object is masked from ‘package:permute’:
+
+    check
+
+"
+"2","
+Attaching package: ‘dplyr’
+
+"
+"2","The following object is masked from ‘package:reshape’:
+
+    rename
+
+"
+"2","The following object is masked from ‘package:nlme’:
+
+    collapse
+
+"
+"2","The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+"
+"2","The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+"
+"2","
+Attaching package: ‘purrr’
+
+"
+"2","The following object is masked from ‘package:magrittr’:
+
+    set_names
+
+"
+"2","Warning:"
+"2"," package ‘svMisc’ was built under R version 4.1.3
+"
+"2","
+Attaching package: ‘svMisc’
+
+"
+"2","The following object is masked from ‘package:httr’:
+
+    progress
+
+"
+"2","The following object is masked from ‘package:utils’:
+
+    ?
+
+"
+"2","data.table 1.14.2 using 4 threads (see ?getDTthreads).  Latest news: r-datatable.com
+"
+"2","
+Attaching package: ‘data.table’
+
+"
+"2","The following object is masked from ‘package:purrr’:
+
+    transpose
+
+"
+"2","The following objects are masked from ‘package:dplyr’:
+
+    between, first, last
+
+"
+"2","The following object is masked from ‘package:reshape’:
+
+    melt
+
+"
+"2","Warning:"
+"2"," package ‘quantmod’ was built under R version 4.1.3
+"
+"2","Loading required package: xts
+"
+"2","Warning:"
+"2"," package ‘xts’ was built under R version 4.1.3
+"
+"2","Loading required package: zoo
+"
+"2","Warning:"
+"2"," package ‘zoo’ was built under R version 4.1.3
+"
+"2","
+Attaching package: ‘zoo’
+
+"
+"2","The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+"
+"2","
+Attaching package: ‘xts’
+
+"
+"2","The following objects are masked from ‘package:data.table’:
+
+    first, last
+
+"
+"2","The following objects are masked from ‘package:dplyr’:
+
+    first, last
+
+"
+"2","Loading required package: TTR
+"
+"2","Warning:"
+"2"," package ‘TTR’ was built under R version 4.1.3
+"
+"2","Registered S3 method overwritten by 'quantmod':
+  method            from
+  as.zoo.data.frame zoo 
+"
+"2","Registered S3 methods overwritten by 'dbplyr':
+  method         from
+  print.tbl_lazy     
+  print.tbl_sql      
+"
+"2","[30m-- [1mAttaching packages[22m --------------------------------------------------------------------------------- tidyverse 1.3.1 --[39m
+"
+"2","[30m[32mâˆš[30m [34mggplot2[30m 3.3.5     [32mâˆš[30m [34mreadr  [30m 2.1.2
+[32mâˆš[30m [34mtibble [30m 3.1.6     [32mâˆš[30m [34mstringr[30m 1.4.0
+[32mâˆš[30m [34mtidyr  [30m 1.2.0     [32mâˆš[30m [34mforcats[30m 0.5.1[39m
+"
+"2","[30m-- [1mConflicts[22m ------------------------------------------------------------------------------------ tidyverse_conflicts() --
+[31mx[30m [34mdata.table[30m::[32mbetween()[30m   masks [34mdplyr[30m::between()
+[31mx[30m [34mdplyr[30m::[32mcollapse()[30m       masks [34mnlme[30m::collapse()
+[31mx[30m [34mtidyr[30m::[32mexpand()[30m         masks [34mreshape[30m::expand()
+[31mx[30m [34mtidyr[30m::[32mextract()[30m        masks [34mmagrittr[30m::extract()
+[31mx[30m [34mdplyr[30m::[32mfilter()[30m         masks [34mstats[30m::filter()
+[31mx[30m [34mxts[30m::[32mfirst()[30m            masks [34mdata.table[30m::first(), [34mdplyr[30m::first()
+[31mx[30m [34mdplyr[30m::[32mlag()[30m            masks [34mstats[30m::lag()
+[31mx[30m [34mxts[30m::[32mlast()[30m             masks [34mdata.table[30m::last(), [34mdplyr[30m::last()
+[31mx[30m [34msvMisc[30m::[32mprogress()[30m      masks [34mhttr[30m::progress()
+[31mx[30m [34mdplyr[30m::[32mrename()[30m         masks [34mreshape[30m::rename()
+[31mx[30m [34mpurrr[30m::[32mset_names()[30m      masks [34mmagrittr[30m::set_names()
+[31mx[30m [34mdata.table[30m::[32mtranspose()[30m masks [34mpurrr[30m::transpose()[39m
+"
+"2","Warning:"
+"2"," package ‘shiny’ was built under R version 4.1.3
+"
+"2","Warning:"
+"2"," package ‘fuzzyjoin’ was built under R version 4.1.3
+"
+"2","
+Attaching package: ‘kableExtra’
+
+"
+"2","The following object is masked from ‘package:dplyr’:
+
+    group_rows
+
+"
+"2","Warning:"
+"2"," package ‘ggnewscale’ was built under R version 4.1.3
+"
+"2","
+Attaching package: ‘cowplot’
+
+"
+"2","The following object is masked from ‘package:reshape’:
+
+    stamp
+
+"
+"2","
+Attaching package: ‘scales’
+
+"
+"2","The following object is masked from ‘package:readr’:
+
+    col_factor
+
+"
+"2","The following object is masked from ‘package:purrr’:
+
+    discard
+
+"
+"2","Registered S3 method overwritten by 'htmlwidgets':
+  method           from         
+  print.htmlwidget tools:rstudio
+"
+"2","
+Attaching package: ‘plotly’
+
+"
+"2","The following object is masked from ‘package:ggplot2’:
+
+    last_plot
+
+"
+"2","The following object is masked from ‘package:reshape’:
+
+    rename
+
+"
+"2","The following object is masked from ‘package:httr’:
+
+    config
+
+"
+"2","The following object is masked from ‘package:stats’:
+
+    filter
+
+"
+"2","The following object is masked from ‘package:graphics’:
+
+    layout
+
+"
+"2","Registering fonts with R
+"
+"1"," Loading Holsman et al. 2020 dataset from 
+ https://github.com/kholsman/EBM_Holsman_NatComm
+--------------------------------
+"
+"0","   head(risk12)  # preview the risk table for ""No cap"" simulations"
