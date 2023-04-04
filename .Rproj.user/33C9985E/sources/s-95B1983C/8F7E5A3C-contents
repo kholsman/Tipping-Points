@@ -1,6 +1,6 @@
 ---
-title: "SICCEM/S-CCME Tipping Points ECCWO5 Workshop"
-author: K. Holsman
+title: "SICCME/S-CCME Tipping Points ECCWO5 Workshop"
+author: K. Holsman, K. Mills, E. Hazen
 always_allow_html: true
 output:
   html_document:
@@ -45,6 +45,22 @@ output:
  today  <- format(Sys.time(), "%b %d, %Y")
  
 ```
+["5th Effects of Climate Change on the World's Oceans Meeting"](https://meetings.pices.int/meetings/international/2023/eccwo-5/Background)
+
+["S-CCME/SICCME Workshop on integrated modeling to identify climate change tipping points in marine ecosystems."](https://meetings.pices.int/meetings/international/2023/eccwo-5/program#W5)  
+
+April 16th, 9:00 am – 5:00 pm
+
+
+
+**Overview**
+
+Marine ecosystems are increasingly impacted by multiple climate change and non-climate stressors that are pushing some systems and species towards or past tipping points (critical points where a small change in a pressure or driver can induce a disproportionate change in system dynamics). The goal of this workshop is to draw upon recent PICES and ICES working group efforts to synthesize findings and outputs from recent integrated modeling projects across the globe. In particular, this SCCME/S-CCME (["ICES/PICES The Strategic Initiative on Climate Change Impacts on Marine Ecosystems"](https://www.ices.dk/community/groups/pages/siccme.aspx)) workshop will review evidence and case studies for historical and future tipping points and thresholds in marine ecosystems to help support climate-informed management advice.
+
+**Potential Outcomes**
+
+1. Github repository with example R code for identifying tipping points in marine systems.  
+2. Peer review publication of emergent approaches, case studies, and considerations of tipping points and thresholds for climate informed fisheries and ecosystem management advice.  
 
 
 # Download the Tipping Points repo{.tabset}
