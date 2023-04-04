@@ -147,7 +147,7 @@ This document provides an overview of accessing, plotting, and creating Tipping 
 
 *Summary* Text TBA
 
-## Threshold analysis{.tabset}
+## Threshold analysis
 
 ### Thresholds summary
 
@@ -438,7 +438,7 @@ Let's first explore the tipping point calcaultions using Pacific cod Biomass for
 
 
 
-## Integrative Resilience Analysis' (IRA){.tabset}
+## Integrative Resilience Analysis' (IRA)
 
 ### IRA summary
 Integrative Resilience Analysis' (IRA) to two case studies: Western Mediterranean and Iberian Seas in the Atlantic (["Hidalgo et al 2022"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648), ["Polo et al. 2022"](https://academic.oup.com/icesjms/article/79/7/2017/6648917)). 
@@ -494,7 +494,7 @@ $$rRes_y = Res_y/max(Res_y)$$
  
 ### plot results
 
-## Stochastic cusp modelling (SCM){.tabset}
+## Stochastic cusp modelling (SCM)
 
 ### SCM Suumary
 From Möllmann et al. ["2021"](https://doi.org/10.1038/s41598-021-93843-z):
