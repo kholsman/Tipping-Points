@@ -457,40 +457,6 @@ modification of generalized cross validation proposed by Cianelli et
 al. (2004) that makes the goodness of fit of GAMs and TGAMs comparable,
 was computed for model selection and estimation of the threshold year. ”
 
-## Stochastic cusp modelling (SCM)
-
-### SCM Suumary
-
-From Möllmann et
-al. [“2021”](https://doi.org/10.1038/s41598-021-93843-z): “SCM is based
-on catastrophe theory, popular in the 1970s21,22, but recently
-rediscovered in a number of research fields23– 31 including fisheries
-science4,32.The cusp is one of seven geometric elements in catastrophe
-theory and represents a 3D surface combining linear and non-linear
-responses of a state variable to one control variable (called the
-asymmetry variable) modulated by a second so-called bifurcation
-variable. In SCM the cusp is represented by a potential function that
-can be fit to data using the method of moments and maximum likelihood
-estimators, and the state, asymmetry and bifurcation are canonical
-variables fit themselves using linear models of observed quantities20.
-Importantly, using SCM we can identify hysteresis by distinguishing
-between unstable (in fact bistable) and stable states in the dynamics of
-the cod stock using a statistic called Cardan´s discriminant (see
-“Methods”). Bistable dynamics exist in the non-linear part of the cusp
-under the folded curve, where the state variable can flip between the
-upper and lower shield, also called the cusp area (shaded in light blue
-in the 3D—Supplementary Fig. S4—and 2D representations of the model
-surface; Fig. 4a). Outside the cusp area the system is assumed to be
-stable which indicates a high degree of irreversibility
-(i.e. hysteresis). As suggested in the SCM literature, we conducted a
-comprehensive model validation that revealed our fitted SCM to be
-superior to alternative linear and logistic models, explaining a large
-portion of the variability in the data and fulfilling additional
-criteria for this model type to be valid (see “Methods” and
-Supplementary Table S4).”
-
-![From Möllmann et al. 2021](Figs/fig1.png)
-
 The IRA was carried out in R (R Core Team, 2019) using packages vegan
 (Oksanen et al.,
 [“2019”](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0027)),
@@ -551,5 +517,39 @@ and akima (Akima et al.,
 Scale response and PC ” both the environmental stressor and the system
 PC were standardized (mean of 0 and standard deviation of 1;
 Vasilakopoulos et al., 2017)”
+
+## Stochastic cusp modelling (SCM)
+
+### SCM Suumary
+
+From Möllmann et
+al. [“2021”](https://doi.org/10.1038/s41598-021-93843-z): “SCM is based
+on catastrophe theory, popular in the 1970s21,22, but recently
+rediscovered in a number of research fields23– 31 including fisheries
+science4,32.The cusp is one of seven geometric elements in catastrophe
+theory and represents a 3D surface combining linear and non-linear
+responses of a state variable to one control variable (called the
+asymmetry variable) modulated by a second so-called bifurcation
+variable. In SCM the cusp is represented by a potential function that
+can be fit to data using the method of moments and maximum likelihood
+estimators, and the state, asymmetry and bifurcation are canonical
+variables fit themselves using linear models of observed quantities20.
+Importantly, using SCM we can identify hysteresis by distinguishing
+between unstable (in fact bistable) and stable states in the dynamics of
+the cod stock using a statistic called Cardan´s discriminant (see
+“Methods”). Bistable dynamics exist in the non-linear part of the cusp
+under the folded curve, where the state variable can flip between the
+upper and lower shield, also called the cusp area (shaded in light blue
+in the 3D—Supplementary Fig. S4—and 2D representations of the model
+surface; Fig. 4a). Outside the cusp area the system is assumed to be
+stable which indicates a high degree of irreversibility
+(i.e. hysteresis). As suggested in the SCM literature, we conducted a
+comprehensive model validation that revealed our fitted SCM to be
+superior to alternative linear and logistic models, explaining a large
+portion of the variability in the data and fulfilling additional
+criteria for this model type to be valid (see “Methods” and
+Supplementary Table S4).”
+
+![From Möllmann et al. 2021](Figs/fig1.png)
 
 # Misc

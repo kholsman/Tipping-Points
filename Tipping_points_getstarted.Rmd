@@ -448,18 +448,6 @@ From Hidalgo et al. 2022:
 From Polov et al. 2022:
 "In the IRA framework, the relationship between PCsys and its drivers is assessed using PCsys as response variable in generalized additive models (GAMs) and threshold-GAMs (TGAMs) (Cianelli et al., 2004). Each of the four stressors with 0, 1, and 2 years of lag were used as explanatory variables in separate models. Testing potential lagged effect of the stressors was designed to detect a potential delayed response of the sampled biomass by species. GAMs are models that assume additive and stationary relationships between the response and explanatory variables while TGAMs are GAMs adjusted to account for abrupt changes in the response mechanism (Ciannelli et al., 2004). The basic GAM function used is included in R package mgcv (Wood, 2011). The “genuine” cross-validatory squared prediction error (gCV), a modification of generalized cross validation proposed by Cianelli et al. (2004) that makes the goodness of fit of GAMs and TGAMs comparable, was computed for model selection and estimation of the threshold year. "
 
-## Stochastic cusp modelling (SCM)
-
-### SCM Suumary
-From Möllmann et al. ["2021"](https://doi.org/10.1038/s41598-021-93843-z):
-"SCM is based on catastrophe theory, popular in the 1970s21,22, but recently rediscovered in a number of research fields23– 31 including fisheries science4,32.The cusp is one of seven geometric elements in catastrophe theory and represents a 3D surface combining linear and non-linear responses of a state variable to one control variable (called the asymmetry variable) modulated by a second so-called bifurcation variable. In SCM the cusp is represented by a potential function that can be fit to data using the method of moments and maximum likelihood estimators, and the state, asymmetry and bifurcation are canonical variables fit themselves using linear models of observed quantities20. Importantly, using SCM we can identify hysteresis by distinguishing between unstable (in fact bistable) and stable states in the dynamics of the cod stock using a statistic called Cardan´s discriminant (see “Methods”). Bistable dynamics exist in the non-linear part of the cusp under the folded curve, where the state variable can flip between the upper and lower shield, also called the cusp area (shaded in light blue in the 3D—Supplementary Fig. S4—and 2D representations of the model surface; Fig. 4a). Outside the cusp area the system is assumed to be stable which indicates a high degree of irreversibility (i.e. hysteresis). As suggested in the SCM literature, we conducted a comprehensive model validation that revealed our fitted SCM to be superior to alternative linear and logistic models, explaining a large portion of the variability in the data and fulfilling additional criteria for
-this model type to be valid (see “Methods” and Supplementary Table S4)."
-
-![From Möllmann et al. 2021](Figs/fig1.png)
-
-
-
-
 The IRA was carried out in R (R Core Team, 2019) using packages vegan (Oksanen et al., ["2019"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0027)), mgcv (Wood, ["2017"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0045)) and akima (Akima et al., ["2015"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0001)).
 
 1. As a first step, a PCA was applied to the time-species matrix of each studied area to identify the main modes of community variability. The PCAs were based on the correlation matrices of the species’ biomasses, following log-transformation.  
@@ -473,6 +461,18 @@ The IRA was carried out in R (R Core Team, 2019) using packages vegan (Oksanen e
 4. To calculate the position of the tipping point of each regime along the trajectory of its respective attractor, the x-coordinates of the tipping points were set so as to ensure that the lowest Resy estimate within each regime was equal to zero. Finally, Resy was scaled by dividing with the maximum value observed to calculate relative resilience (rResy). The stability landscape with its alternate basins of attraction emerged through linear interpolation of all rResy values onto a 100 × 100 grid.  
 
 Scale response and PC " both the environmental stressor and the system PC were standardized (mean of 0 and standard deviation of 1; Vasilakopoulos et al., 2017)"
+
+
+## Stochastic cusp modelling (SCM)
+
+### SCM Suumary
+From Möllmann et al. ["2021"](https://doi.org/10.1038/s41598-021-93843-z):
+"SCM is based on catastrophe theory, popular in the 1970s21,22, but recently rediscovered in a number of research fields23– 31 including fisheries science4,32.The cusp is one of seven geometric elements in catastrophe theory and represents a 3D surface combining linear and non-linear responses of a state variable to one control variable (called the asymmetry variable) modulated by a second so-called bifurcation variable. In SCM the cusp is represented by a potential function that can be fit to data using the method of moments and maximum likelihood estimators, and the state, asymmetry and bifurcation are canonical variables fit themselves using linear models of observed quantities20. Importantly, using SCM we can identify hysteresis by distinguishing between unstable (in fact bistable) and stable states in the dynamics of the cod stock using a statistic called Cardan´s discriminant (see “Methods”). Bistable dynamics exist in the non-linear part of the cusp under the folded curve, where the state variable can flip between the upper and lower shield, also called the cusp area (shaded in light blue in the 3D—Supplementary Fig. S4—and 2D representations of the model surface; Fig. 4a). Outside the cusp area the system is assumed to be stable which indicates a high degree of irreversibility (i.e. hysteresis). As suggested in the SCM literature, we conducted a comprehensive model validation that revealed our fitted SCM to be superior to alternative linear and logistic models, explaining a large portion of the variability in the data and fulfilling additional criteria for
+this model type to be valid (see “Methods” and Supplementary Table S4)."
+
+![From Möllmann et al. 2021](Figs/fig1.png)
+
+
 
 # Misc
 
