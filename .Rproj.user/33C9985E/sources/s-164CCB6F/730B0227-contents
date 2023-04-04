@@ -7,6 +7,9 @@
 # ----------------------------------------
 
 lib_list <- c(
+  # these for tipping points
+  "vegan","mgcv","akima",
+  
   # these for reshaping and manipulating data:
     "ncdf4",
     "devtools",

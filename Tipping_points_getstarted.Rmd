@@ -1,0 +1,209 @@
+---
+title: "SICCEM/S-CCME Tipping Points ECCWO5 Workshop"
+author: K. Holsman
+always_allow_html: true
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+  header-includes:
+  - \usepackage{knputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  - \documentclass{article}
+  - \usepackage{amsmath}
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  pdf_document:
+    toc: TRUE
+    toc_depth: 3
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
+#runtime: shiny
+---
+
+
+
+```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
+ 
+ #source("R/make.R")       # loads packages, data, setup, etc.
+ knitr::opts_chunk$set(echo = T, fig.align="center",warning = FALSE, message = FALSE)
+ #knitr::opts_knit$set(root.dir = '../')
+ #options(knitr.table.format = "latex")
+ thisYr <- format(Sys.time(), "%Y")
+ today  <- format(Sys.time(), "%b %d, %Y")
+ 
+```
+
+
+# Download the Tipping Points repo{.tabset}
+
+To run this tutorial first clone the git repository to your local drive:
+
+## Option 1: Use R  
+
+This set of commands, run within R, downloads the repository and unpacks it, with the Tipping Points directory structure being located in the specified `download_path`.  This also performs the folder renaming mentioned in Option 2.
+
+```{r gitdwnld, eval = FALSE,echo =T}
+    # Specify the download directory
+    main_nm       <- "Tipping-Points"
+
+    # Note: Edit download_path for preference
+    download_path <-  path.expand("~")
+    dest_fldr     <- file.path(download_path,main_nm)
+    
+    url           <- "https://github.com/kholsman/Tipping-Points/archive/refs/heads/main.zip"
+    dest_file     <- file.path(download_path,paste0(main_nm,".zip"))
+    download.file(url=url, destfile=dest_file)
+    
+    # unzip the .zip file (manually unzip if this doesn't work)
+    setwd(download_path)
+    unzip (dest_file, exdir = download_path,overwrite = T)
+    
+    #rename the unzipped folder from ACLIM2-main to ACLIM2
+    file.rename(paste0(main_nm,"-main"), main_nm)
+    setwd(main_nm)
+    
+    
+    
+```
+
+## Option 2: Download the zipped repo  
+Download the full zip archive directly from the [**Tipping-Points Repo**](https://github.com/kholsman/Tipping-Points) using this link: [**https://github.com/kholsman/Tipping-Points/archive/refs/heads/main.zip**](https://github.com/kholsman/Tipping-Points/archive/refs/heads/main.zip), and unzip its contents while preserving directory structure. 
+
+**Important!** If downloading from zip, please **rename the root folder** from `Tipping-Points-main` (in the zipfile) to `Tipping-Points` (name used in cloned copies) after unzipping, for consistency in the following examples.
+
+Your final folder structure should look like this:
+
+<!-- ![](Figs/dir.png){ width=100%} -->
+
+## Option 3: Use git commandline
+
+If you have git installed and can work with it, this is the preferred method as it preserves all directory structure and can aid in future updating. Use this from a **terminal command line, not in R**, to clone the full Tipping-Points directory and sub-directories:
+
+```{bash, eval = FALSE,echo =T}
+    gh repo clone kholsman/Tipping-Points
+```
+
+---
+
+# Get the data
+
+<!-- ![](Figs/DATA_dir2.png){ width=50%} -->
+
+
+## Set up the Workspace
+
+Open R() and used 'setwd()' to navigate to the root ACLIM2 folder (.e.g, ~/mydocuments/ACLIM2)
+
+```{R  start, eval=TRUE, echo=T, results='show',message=FALSE}
+    
+    # set the workspace to your local ACLIM2 folder
+    # e.g.
+    # setwd( path.expand("~/Documents/GitHub/Tipping-Points") )
+   
+    # --------------------------------------
+    # SETUP WORKSPACE
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/Tipping-Points"
+    
+    # loads packages, data, setup, etc.
+    suppressWarnings(source("R/make.R"))
+    
+```
+
+---
+
+
+
+# Read this before you start
+
+## Overview{.tabset}
+
+add TEXT
+
+---
+
+This document provides an overview of accessing, plotting, and creating Tipping Point workshop analyses
+
+
+**Important!** A few key things to know before getting started are detailed below. Please review this information before getting started.
+
+[ ADD}
+]
+
+# Tipping Point Methods{.tabset}
+
+*Summary*
+
+## Stochastic cusp modelling (SCM)
+From Möllmann et al. ["2021"](https://doi.org/10.1038/s41598-021-93843-z):
+"SCM is based on catastrophe theory, popular in the 1970s21,22, but recently rediscovered in a number of research fields23– 31 including fisheries science4,32.The cusp is one of seven geometric elements in catastrophe theory and represents a 3D surface combining linear and non-linear responses of a state variable to one control variable (called the asymmetry variable) modulated by a second so-called bifurcation variable. In SCM the cusp is represented by a potential function that can be fit to data using the method of moments and maximum likelihood estimators, and the state, asymmetry and bifurcation are canonical variables fit themselves using linear models of observed quantities20. Importantly, using SCM we can identify hysteresis by distinguishing between unstable (in fact bistable) and stable states in the dynamics of the cod stock using a statistic called Cardan´s discriminant (see “Methods”). Bistable dynamics exist in the non-linear part of the cusp under the folded curve, where the state variable can flip between the upper and lower shield, also called the cusp area (shaded in light blue in the 3D—Supplementary Fig. S4—and 2D representations of the model surface; Fig. 4a). Outside the cusp area the system is assumed to be stable which indicates a high degree of irreversibility (i.e. hysteresis). As suggested in the SCM literature, we conducted a comprehensive model validation that revealed our fitted SCM to be superior to alternative linear and logistic models, explaining a large portion of the variability in the data and fulfilling additional criteria for
+this model type to be valid (see “Methods” and Supplementary Table S4)."
+
+![From Möllmann et al. 2021](Figs/fig1.png)
+
+
+
+
+## Integrative Resilience Analysis' (IRA) 
+Integrative Resilience Analysis' (IRA) to two case studies: Western Mediterranean and Iberian Seas in the Atlantic (["Hidalgo et al 2022"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648), ["Polo et al. 2022"](https://academic.oup.com/icesjms/article/79/7/2017/6648917)). 
+
+From Hidalgo et al. 2022:
+"The IRA is a three-step methodological framework which applies the concepts of resilience and folded stability landscapes in an empirical multivariate context through the combination of multivariate analysis, non-additive modelling and a resilience assessment (Vasilakopoulos et al., ["2017"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0042)). This way, the IRA elucidates the system dynamics and shift mechanisms in response to external stressors."
+
+From Polov et al. 2022:
+"In the IRA framework, the relationship between PCsys and its drivers is assessed using PCsys as response variable in generalized additive models (GAMs) and threshold-GAMs (TGAMs) (Cianelli et al., 2004). Each of the four stressors with 0, 1, and 2 years of lag were used as explanatory variables in separate models. Testing potential lagged effect of the stressors was designed to detect a potential delayed response of the sampled biomass by species. GAMs are models that assume additive and stationary relationships between the response and explanatory variables while TGAMs are GAMs adjusted to account for abrupt changes in the response mechanism (Ciannelli et al., 2004). The basic GAM function used is included in R package mgcv (Wood, 2011). The “genuine” cross-validatory squared prediction error (gCV), a modification of generalized cross validation proposed by Cianelli et al. (2004) that makes the goodness of fit of GAMs and TGAMs comparable, was computed for model selection and estimation of the threshold year. "
+
+
+The IRA was carried out in R (R Core Team, 2019) using packages vegan (Oksanen et al., ["2019"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0027)), mgcv (Wood, ["2017"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0045)) and akima (Akima et al., ["2015"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0001)).
+
+1. As a first step, a PCA was applied to the time-species matrix of each studied area to identify the main modes of community variability. The PCAs were based on the correlation matrices of the species’ biomasses, following log-transformation.  
+2. The sequential regime shift detection method (STARS), modified to account for temporal autocorrelation (Rodionov, 2006), was applied to detect significant shifts in the mean values of PC1 and PC2 of the optimal PCAs. STARS estimates a Regime Shift Index (RSI), that is, a cumulative sum of normalized anomalies relative to each value of the time series analysed, and uses it to test the hypothesis of a regime shift occurring in that year (Rodionov, 2006). Here, we used a cut-off length of 3 years and a significant probability threshold of p = 0.05.
+
+3. Apply GAM and TGAM with lags 0-2 years:
+  * fit 18 GAMs and 18 TGAMs (3 stressors × 2 seasons × 3 lags) for each system, using either PC1 or PC2 as a response variable. To compare the goodness of fit of GAMs and TGAMs and select the optimal model, we computed the ‘genuine’ cross-validation squared prediction error (genuine CV; gCV), which accounts for the estimation of the threshold line and the estimation of the degrees of freedom for the functions appearing in all additive and non-additive formulations (Ciannelli et al., 2004).   
+  *  To investigate the type of the relationship between the biological system, as captured by PC1 or PC2, and each of the environmental stressors (winter and spring Chl a, SST and RHI), the fits of relevant generalized additive models (GAMs) and non-additive threshold GAMs (TGAMs) at 0- to 2-time lags were compared. The effect of the stressors on the system was examined at 0- to 2-year lags to account for a potential delay in the environmental effect on the community sampled given that environmental effects typically influence spawning and early life stages, while the sampled biomass is usually dominated by specimens older than 0 years old.  
+  *  A GAM describes a system that changes in a continuous way in response to the corresponding change of its stressor(s), while a TGAM represents a system response curve that is folded backwards, forming a fold bifurcation with two tipping points (Figure S1).  
+  
+4. To calculate the position of the tipping point of each regime along the trajectory of its respective attractor, the x-coordinates of the tipping points were set so as to ensure that the lowest Resy estimate within each regime was equal to zero. Finally, Resy was scaled by dividing with the maximum value observed to calculate relative resilience (rResy). The stability landscape with its alternate basins of attraction emerged through linear interpolation of all rResy values onto a 100 × 100 grid.  
+
+Scale response and PC " both the environmental stressor and the system PC were standardized (mean of 0 and standard deviation of 1; Vasilakopoulos et al., 2017)"
+
+## Threshold analysis
+
+![From Holsman et al. 2020 "Analysis of proportional change in future catch relative to the persistence scenario (∆Catch) as a function of future bottom temperature (°C). Solid lines represent the mean smoothing function (s(x)); shading indicates the 2.5 and 97.5% quantiles from 1000 bootstrap replicates. Scenarios without the 2 MT cap (a, c, e); scenarios with the 2 MT cap (b, d, f). Rows correspond to each species. The thick white and orange lines indicate areas where the 95% CI of the first derivative (s(x)′) of the smoothing functions do not include zero; orange bar indicates indicate where the 95% CI of the second derivative (s(x)″) does not overlap zero; on each line, red circles indicate the best estimate of the tipping point (i.e., s(x)″ is most different from zero)."](Figs/Holsman.png)
+
+
+```{r makeReadME, echo=FALSE,eval=F, include =F}
+#setwd("/Users/kholsman/Documents/GitHub/Tipping-Points")
+file.remove(paste0("index",".html"))
+# update github
+file.copy(from=paste0("Tipping_points_getstarted",".html"),to=paste0("index",".html"),overwrite=T)
+
+# file.copy(from=paste0("ACLIM2_quickStart",".md"),to=paste0("README",".md"),overwrite=T)
+# file.remove(paste0("README",".md"))
+
+# source("R/make.R")
+# copy and paste this into R window (won't work within markdown)
+rmd2md(rmd_fl = "Tipping_points_getstarted",md_fl = "README")
+
+
+```
+
+
+
+
+
+

@@ -1,0 +1,19 @@
+"0","  cat(""The download takes a few mins (large data files)...\n"")
+"
+"1","The download takes a few mins (large data files)...
+"
+"0",""
+"0","    url <-   ""https://ndownloader.figshare.com/files/23756117?private_link=81007e2dd5edee0a5a7a"""
+"0","  "
+"0","    dest_path  <-  file.path(main,""data.zip"")"
+"0","    download.file(url=url, destfile=dest_path,method=""libcurl"")"
+"2","trying URL 'https://ndownloader.figshare.com/files/23756117?private_link=81007e2dd5edee0a5a7a'
+"
+"2","Warning in download.file(url = url, destfile = dest_path, method = ""libcurl"") :"
+"2","
+ "
+"2"," cannot open URL 'https://ndownloader.figshare.com/files/23756117?private_link=81007e2dd5edee0a5a7a': HTTP status was '404 Not Found'
+"
+"2","Error in download.file(url = url, destfile = dest_path, method = ""libcurl"") : 
+  cannot open URL 'https://ndownloader.figshare.com/files/23756117?private_link=81007e2dd5edee0a5a7a'
+"
