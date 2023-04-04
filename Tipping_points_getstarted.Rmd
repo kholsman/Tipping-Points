@@ -149,6 +149,8 @@ This document provides an overview of accessing, plotting, and creating Tipping 
 
 ## Threshold analysis
 
+### Thresholds summary
+
 From Large et al. "The shape of the relationship between a response and pressure is captured in the smoothing function s(X). Values of the pressure variable that influence the response in a particular direction can be enumerated by recognizing qualities of the shape of the smoothing function. The first derivative sˆ’(X) of s(X) indicates regions where a pressure variable causes a negative [sˆ’(X) , 0] or positive [sˆ’(X) . 0] response to an ecological indicator. Further, the second derivative sˆ”(X) denotes regions where ˆs’(X) changes sign and a threshold is crossed [0 , sˆ”(X) . 0]. To measure the uncertainty surrounding both sˆ’(X)and sˆ”(X), we estimated the first and second derivatives using finite differ- ences for each bootstrap replicated smoothing term sbr(X). Both ˆsi’(X)and sˆi”(X) were sorted into ascending order and the value of the  2.5% and 97.5% quantiles of sˆi’(X)and sˆi”(X)were considered the 95% CI for the first and second derivative of the smoothing function (Buckland, 1984). A significant trend sˆ’(X) or threshold sˆ”(X) was identified  when the 95% CI crossed zero for either derivative (Fewster et al., 2000; Lindegren et al., 2012). "
     from Samhouri et al. and red dotted arrow indicates the best estimate of the location of the threshold (i.e., where the second  derivative is most difference from zero within the threshold range).
     
@@ -182,6 +184,15 @@ From Large et al. "The shape of the relationship between a response and pressure
    C_thresh_12_2$thrsh_x # Temperature tipping point for p cod under "No cap" simulations
    C_thresh_12_3$thrsh_x # No tipping point was found for arrowtooth under "No cap" simulations
    
+ Biom_tmp <- list("No Cap" = c( 
+   B_thresh_12_1$thrsh_x,
+   B_thresh_12_2$thrsh_x,
+   B_thresh_12_3$thrsh_x),
+   "2 MT Cap" = c( 
+   B_thresh_13_1$thrsh_x,
+   B_thresh_13_2$thrsh_x,
+   B_thresh_13_3$thrsh_x))
+ 
  tmp <- list("No Cap" = c( 
    C_thresh_12_1$thrsh_x,
    C_thresh_12_2$thrsh_x,
@@ -208,7 +219,7 @@ From Large et al. "The shape of the relationship between a response and pressure
  
 ```
  
-### recreate tipping point analysis
+### Recreate tipping point analysis
 
 Let's first explore the tipping point calcaultions using Pacific cod Biomass for scenarios without the 2 MT cap ('B_thresh_12_1')
 
@@ -427,6 +438,8 @@ Let's first explore the tipping point calcaultions using Pacific cod Biomass for
 
 
 ## Integrative Resilience Analysis' (IRA) 
+
+### IRA summary
 Integrative Resilience Analysis' (IRA) to two case studies: Western Mediterranean and Iberian Seas in the Atlantic (["Hidalgo et al 2022"](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648), ["Polo et al. 2022"](https://academic.oup.com/icesjms/article/79/7/2017/6648917)). 
 
 From Hidalgo et al. 2022:
@@ -436,6 +449,8 @@ From Polov et al. 2022:
 "In the IRA framework, the relationship between PCsys and its drivers is assessed using PCsys as response variable in generalized additive models (GAMs) and threshold-GAMs (TGAMs) (Cianelli et al., 2004). Each of the four stressors with 0, 1, and 2 years of lag were used as explanatory variables in separate models. Testing potential lagged effect of the stressors was designed to detect a potential delayed response of the sampled biomass by species. GAMs are models that assume additive and stationary relationships between the response and explanatory variables while TGAMs are GAMs adjusted to account for abrupt changes in the response mechanism (Ciannelli et al., 2004). The basic GAM function used is included in R package mgcv (Wood, 2011). The “genuine” cross-validatory squared prediction error (gCV), a modification of generalized cross validation proposed by Cianelli et al. (2004) that makes the goodness of fit of GAMs and TGAMs comparable, was computed for model selection and estimation of the threshold year. "
 
 ## Stochastic cusp modelling (SCM)
+
+### SCM Suumary
 From Möllmann et al. ["2021"](https://doi.org/10.1038/s41598-021-93843-z):
 "SCM is based on catastrophe theory, popular in the 1970s21,22, but recently rediscovered in a number of research fields23– 31 including fisheries science4,32.The cusp is one of seven geometric elements in catastrophe theory and represents a 3D surface combining linear and non-linear responses of a state variable to one control variable (called the asymmetry variable) modulated by a second so-called bifurcation variable. In SCM the cusp is represented by a potential function that can be fit to data using the method of moments and maximum likelihood estimators, and the state, asymmetry and bifurcation are canonical variables fit themselves using linear models of observed quantities20. Importantly, using SCM we can identify hysteresis by distinguishing between unstable (in fact bistable) and stable states in the dynamics of the cod stock using a statistic called Cardan´s discriminant (see “Methods”). Bistable dynamics exist in the non-linear part of the cusp under the folded curve, where the state variable can flip between the upper and lower shield, also called the cusp area (shaded in light blue in the 3D—Supplementary Fig. S4—and 2D representations of the model surface; Fig. 4a). Outside the cusp area the system is assumed to be stable which indicates a high degree of irreversibility (i.e. hysteresis). As suggested in the SCM literature, we conducted a comprehensive model validation that revealed our fitted SCM to be superior to alternative linear and logistic models, explaining a large portion of the variability in the data and fulfilling additional criteria for
 this model type to be valid (see “Methods” and Supplementary Table S4)."
@@ -459,7 +474,7 @@ The IRA was carried out in R (R Core Team, 2019) using packages vegan (Oksanen e
 
 Scale response and PC " both the environmental stressor and the system PC were standardized (mean of 0 and standard deviation of 1; Vasilakopoulos et al., 2017)"
 
-#Misc
+# Misc
 
 
 ```{r makeReadME, echo=FALSE,eval=F, include =F}

@@ -110,6 +110,8 @@ detailed below. Please review this information before getting started.
 
 ## Threshold analysis
 
+### Thresholds summary
+
 From Large et al. “The shape of the relationship between a response and
 pressure is captured in the smoothing function s(X). Values of the
 pressure variable that influence the response in a particular direction
@@ -158,6 +160,15 @@ derivative is most difference from zero within the threshold range).
    C_thresh_12_2$thrsh_x # Temperature tipping point for p cod under "No cap" simulations
    C_thresh_12_3$thrsh_x # No tipping point was found for arrowtooth under "No cap" simulations
    
+ Biom_tmp <- list("No Cap" = c( 
+   B_thresh_12_1$thrsh_x,
+   B_thresh_12_2$thrsh_x,
+   B_thresh_12_3$thrsh_x),
+   "2 MT Cap" = c( 
+   B_thresh_13_1$thrsh_x,
+   B_thresh_13_2$thrsh_x,
+   B_thresh_13_3$thrsh_x))
+ 
  tmp <- list("No Cap" = c( 
    C_thresh_12_1$thrsh_x,
    C_thresh_12_2$thrsh_x,
@@ -183,7 +194,7 @@ derivative is most difference from zero within the threshold range).
                                   max(abs(df2_qnt$smoothed_up[thrsh2_all]))  )])  ]
 ```
 
-### recreate tipping point analysis
+### Recreate tipping point analysis
 
 Let’s first explore the tipping point calcaultions using Pacific cod
 Biomass for scenarios without the 2 MT cap (‘B_thresh_12_1’)
@@ -413,6 +424,8 @@ the residuals in order to allow for autocorrelation.
 
 ## Integrative Resilience Analysis’ (IRA)
 
+### IRA summary
+
 Integrative Resilience Analysis’ (IRA) to two case studies: Western
 Mediterranean and Iberian Seas in the Atlantic ([“Hidalgo et al
 2022”](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648),
@@ -445,6 +458,8 @@ al. (2004) that makes the goodness of fit of GAMs and TGAMs comparable,
 was computed for model selection and estimation of the threshold year. ”
 
 ## Stochastic cusp modelling (SCM)
+
+### SCM Suumary
 
 From Möllmann et
 al. [“2021”](https://doi.org/10.1038/s41598-021-93843-z): “SCM is based
@@ -536,3 +551,5 @@ and akima (Akima et al.,
 Scale response and PC ” both the environmental stressor and the system
 PC were standardized (mean of 0 and standard deviation of 1;
 Vasilakopoulos et al., 2017)”
+
+# Misc
