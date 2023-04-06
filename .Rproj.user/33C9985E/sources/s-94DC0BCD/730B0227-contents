@@ -8,26 +8,28 @@
 
 lib_list <- c(
   # these for tipping points
-  "vegan","mgcv","akima","progress",
+  "vegan","mgcv","progress",
+  "akima",                 # Interpolation of Irregularly and Regularly Spaced Data
+  "cusp",
+  "ggrepel",
   
   # these for reshaping and manipulating data:
-    "ncdf4",
-    "devtools",
-   # "ncfd",
-    "magrittr",
-    "httr",
-    "reshape",
-    "dplyr", 
-    "purrr", "svMisc",
+  "ncdf4",
+  "devtools",
+  "magrittr",
+  "httr",
+  "reshape",
+  "dplyr",  
+  "svMisc",
   "data.table",
   "quantmod",
   "rootSolve",
   "purrr",
-  "readxl",   # "drake",
-    "tidyverse",
-   "shiny",
-   "fuzzyjoin",
-    #"usethis",
+  "readxl",
+  "tidyverse",
+  "shiny",
+  "fuzzyjoin",
+  #"usethis",
     
   # # these for ggplot mapping:
   #   "raster",
@@ -46,7 +48,6 @@ lib_list <- c(
     "ggnewscale",
     "RColorBrewer",
     "ggplot2", 
-    "mgcv",
     "cowplot",               # 
     "wesanderson",
     "scales",
