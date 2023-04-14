@@ -150,7 +150,7 @@ This document provides an overview of accessing, plotting, and demoing Tipping P
 
 ### Thresholds summary
 
-Below is an example analysis from Holsman et al. 2020 where threshold analysis was used to detect a thermal tipping point in biomass and catch for Bering Sea groundfish.
+Below is an example analysis from (Holsman et al. 2020)[https://www.nature.com/articles/s41467-020-18300-3] where threshold analysis was used to detect a thermal tipping point in biomass and catch for Bering Sea groundfish.
 
 ![From Holsman et al. 2020](Figs/Holsman2.png)
 
