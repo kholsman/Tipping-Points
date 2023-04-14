@@ -121,29 +121,23 @@ Open R() and used ‘setwd()’ to navigate to the root ACLIM2 folder (.e.g,
 
 ------------------------------------------------------------------------
 
-# Read this before you start
+# Tipping Point Methods Demo
 
-## Overview
-
-add TEXT
-
-------------------------------------------------------------------------
-
-This document provides an overview of accessing, plotting, and creating
-Tipping Point workshop analyses
-
-**Important!** A few key things to know before getting started are
-detailed below. Please review this information before getting started.
-
-\[ ADD}\]
-
-# Tipping Point Methods
-
-*Summary* Text TBA
+This document provides an overview of accessing, plotting, and demoing
+Tipping Point analyses. Below are three example vignettes for tipping
+point analysis : Thresholds analysis courtesy of Kirstin Holsman
+[kirstin.holsman@noaa.gov](kirstin.holsman@noaa.gov), IRA courtesy of
+Manuel Hidalgo [jm.hidalgo@ieo.csic.es](jm.hidalgo@ieo.csic.es), and
+Stochastic CUSP modelling (SCM) courtesy of Camilla Sguotti
+([camilla.sguotti@unipd.it](camilla.sguotti@unipd.it).
 
 ## Threshold analysis
 
 ### Thresholds summary
+
+Below is an example analysis from Holsman et al. 2020 where threshold
+analysis was used to detect a thermal tipping point in biomass and catch
+for Bering Sea groundfish.
 
 From Large et al. “The shape of the relationship between a response and
 pressure is captured in the smoothing function s(X). Values of the
@@ -168,10 +162,10 @@ derivative is most difference from zero within the threshold range).
 
 ![From Holsman et al. 2020](Figs/Holsman2.png)
 
-### Download the data
+### Download the data from Holsman et al. 2020
 
 ``` r
-     cat("The download takes a few mins (large data files)...\n")
+    cat("The download takes a few mins (large data files: 251.5 MB)...\n")
 
     url <-   "https://figshare.com/ndownloader/files/24115769?private_link=81007e2dd5edee0a5a7a"
     options(timeout = max(300, getOption("timeout")))
@@ -250,7 +244,7 @@ without the 2 MT cap effects (’\_12_1’).
 We measured uncertainty surrounding each tmp_gam by using a naive
 bootstrap with random sampling and replacement. For each
 indicator–pressure combination, bootstrap replicates were selected from
-the raw data and each bri was fitted with a tmp_gam.
+the raw data and each was fitted with a tmp_gam.
 
 For pressure–state relationships identified as nonlinear, we defined the
 location of the threshold as the inflection point, that is, the value of
@@ -261,21 +255,28 @@ function itself, along with its second derivative, via bootstrapping of
 the residuals in order to allow for autocorrelation.
 
 ``` r
-  # pre-allocate NA Matrix
+  # pre-allocate 'NA' Matrix
   # ------------------------------------
+
+  # TIP: 'boot_nobsIN' is specified in R/setup.R as 1000
+  # boot_nobsIN <- 500 # uncomment this line if the code is slow
+    
+  # pre allocate NA Matrix
     Deriv1 <- 
     Deriv2 <- 
     hatFit <- 
     hatse  <- matrix(NA,boot_nobsIN,length(x))
     gmlist <- list()
-    boot_n    <- 1000 # number of bootstrap runs
-    boot_nobs <- 1000 # optional subsample, if boot_nobs > sample nobs, is set = sample nobs
+    
+  # set bootstrap iterations to boot_nobsIN    
+    boot_n    <- boot_nobsIN # number of bootstrap runs
+    boot_nobs <- boot_nobsIN # optional subsample, if boot_nobs > sample nobs, is set = sample nobs
     knotsIN   <- t_knots # number of knots, set to 4 in Holsman et al. 2020
     
-    sdmult   <- 1 # 1 sd
-    method   <- methodIN  # Holsman et al. 2020 used method 2
-    probIN   <-  c(.025,.5,.975) # probablities for the quantile ranges
-    spanIN   <- span_set  # default set to 0.1
+    sdmult    <- 1 # 1 sd
+    method    <- methodIN  # Holsman et al. 2020 used method 2
+    probIN    <- c(.025,.5,.975) # probablities for the quantile ranges
+    spanIN    <- span_set  # default set to 0.1
     
   # Run the boot strap
   # ------------------------------------
@@ -308,7 +309,6 @@ the residuals in order to allow for autocorrelation.
   qnt    <- apply(hatFit,2,quantile,probs=probIN)
   qntse  <- apply(hatse,2,quantile,probs=probIN)
   nobs   <- length(x) 
-  
   
   # first to the gam using 1-3 methods
     hat_qnt1 <- data.frame(tmp = x,
@@ -428,7 +428,7 @@ the residuals in order to allow for autocorrelation.
     thrsh2<-mean(thrsh2_all[which(abs(df2_qnt$smoothed_mn[thrsh2_all])==max(abs(df2_qnt$smoothed_mn[thrsh2_all])))],na.rm=T)
   
    
-   pp<- ggplot(rbind(
+   plot1<- ggplot(rbind(
     hat_qnt%>%select(TempC = tmp,up=smoothed_up, mn=smoothed_mn, 
                      dwn=smoothed_dwn,sig)%>%mutate(method="a) smoothed gam (s(x))"),
     df1_qnt%>%select(TempC = tmp,up=smoothed_up, mn=smoothed_mn, 
@@ -441,7 +441,7 @@ the residuals in order to allow for autocorrelation.
      scale_fill_viridis_d(begin = .8, end=.1)+
      theme_minimal()
    
-  pp + geom_mark_rect(aes(x=TempC, y=up,fill = sig, label = "sig. range"))+
+  plot1 + geom_mark_rect(aes(x=TempC, y=up,fill = sig, label = "sig. range"))+
     geom_vline (xintercept =df2_qnt$tmp[thrsh2], color = "red")
 ```
 
@@ -558,10 +558,6 @@ year (Rodionov, 2006)”*. Hidalgo et al. 2022 use a cut-off length of 3
 years and a significant probability threshold of p = 0.05’ Polo et
 al. 2022 used cut-off length of 15 years.
 
-``` r
-# TBA
-```
-
 ### Step 3. Apply GAM and TGAM with lags 0-2 years and gCV
 
 Now apply GAM and TGAM with lags 0-2 years. Hidalgo et al. 2022
@@ -589,7 +585,6 @@ appearing in all additive and non-additive formulations (Ciannelli et
 al., 2004)”* in order to evaluate goodness of fit of GAMs and TGAMs.
 
 ``` r
-# TBA
 # 3.1. fit Tgam and GAMS PC~stressor system
 #      and Compute the genuine CV (gCV)
 # ------------------------------------
@@ -644,7 +639,7 @@ al., 2004)”* in order to evaluate goodness of fit of GAMs and TGAMs.
 ```
 
 <img src="Tipping_points_getstarted_files/figure-markdown_github/IRA_STEP3-2.png" style="display: block; margin: auto;" />
-##\# Step 4. Calculate the position of the tipping point of each regime
+\### Step 4. Calculate the position of the tipping point of each regime
 
 Calculate the position of the tipping point of each regime along the
 trajectory of its respective attractor. Note that *“the x-coordinates of
@@ -778,7 +773,7 @@ resilience (*r**R**e**s*<sub>*y*</sub>):
   df4 <- data.frame(x = newdata4$pc1str[order(newdata4$pc1str)],y= w[order(newdata4$pc1str)])
 
   
-  pp <- ggplot() + 
+  plot1 <- ggplot() + 
     geom_contour_filled(data = xx_df, aes(x = X1, y = X2, z = value), alpha=.7,bins=20)+
     geom_point(data = Data[(NROW(Data)-1):(NROW(Data)),], inherit.aes = F,
                aes(x = pc1str, y = pc1sys),size = 3)+
@@ -807,7 +802,7 @@ resilience (*r**R**e**s*<sub>*y*</sub>):
     ylab("Northern Spain community (PC1sys)")+
     theme_minimal()
 
-pp
+plot1
 ```
 
 <img src="Tipping_points_getstarted_files/figure-markdown_github/IRA_STEP6-1.png" style="display: block; margin: auto;" />
@@ -916,7 +911,6 @@ of hysteresis, we then perform the stochastic cusp model.
 
 load("Data/data_ex.RData") 
 
-
 # -----------------------------------
 # fit the stochastic cusp model
 # -----------------------------------
@@ -927,6 +921,7 @@ summary(fit_community, logist=T)
 
 #the output show the coefficients of the three variables (alpha, beta and z). 
 #At the end the output show the results of the three alternative models. 
+
 plot(fit_community)
 ```
 
@@ -946,6 +941,7 @@ pred.community$Y = fit_community$y
 head(pred.community)
 
 # calculate Cardan´s discriminant (delta): 27*alpha^2-4beta^3 => this one help us to define the presence of multiple equilibria.
+
 delta.community = 27*(pred.community$alpha^2) - 4* (pred.community$beta^3)
 pred.community$delta = delta.community 
 
@@ -1023,5 +1019,3 @@ p1
 ``` r
 ####### Interpretation from the presentation and Sguotti et al., 2022 (Journal of Animal Ecology)
 ```
-
-# Misc

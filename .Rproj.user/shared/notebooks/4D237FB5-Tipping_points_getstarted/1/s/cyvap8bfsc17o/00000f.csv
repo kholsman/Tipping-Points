@@ -1,0 +1,29 @@
+"0","    "
+"0","    # set the workspace to your local ACLIM2 folder"
+"0","    # e.g."
+"0","    # setwd( path.expand(""~/Documents/GitHub/Tipping-Points"") )"
+"0","   "
+"0","    # --------------------------------------"
+"0","    # SETUP WORKSPACE"
+"0","    tmstp  <- format(Sys.time(), ""%Y_%m_%d"")"
+"0","    main   <- getwd()  #""~/GitHub_new/Tipping-Points"""
+"0","    "
+"0","    # loads packages, data, setup, etc."
+"0","    suppressWarnings(source(""R/make.R""))"
+"2","WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+"
+"2","Installing packages into ‘C:/Users/kirstin.holsman/AppData/Local/R/win-library/4.2’
+(as ‘lib’ is unspecified)
+"
+"2","also installing the dependencies ‘bit’, ‘credentials’, ‘sys’, ‘zip’, ‘gitcreds’, ‘httr2’, ‘ini’, ‘diffobj’, ‘bit64’, ‘pkgconfig’, ‘clipr’, ‘gert’, ‘gh’, ‘rappdirs’, ‘rprojroot’, ‘whisker’, ‘callr’, ‘downlit’, ‘xopen’, ‘brew’, ‘stringi’, ‘brio’, ‘praise’, ‘waldo’, ‘askpass’, ‘fansi’, ‘utf8’, ‘rematch’, ‘backports’, ‘blob’, ‘DBI’, ‘gargle’, ‘uuid’, ‘ids’, ‘rematch2’, ‘timechange’, ‘textshaping’, ‘vroom’, ‘tzdb’, ‘selectr’, ‘sass’, ‘jquerylib’, ‘tinytex’, ‘colorspace’, ‘permute’, ‘hms’, ‘prettyunits’, ‘R6’, ‘crayon’, ‘sp’, ‘Rcpp’, ‘rlang’, ‘withr’, ‘usethis’, ‘cli’, ‘desc’, ‘ellipsis’, ‘fs’, ‘lifecycle’, ‘memoise’, ‘miniUI’, ‘pkgbuild’, ‘pkgdown’, ‘pkgload’, ‘profvis’, ‘rcmdcheck’, ‘remotes’, ‘roxygen2’, ‘rversions’, ‘sessioninfo’, ‘testthat’, ‘urlchecker’, ‘curl’, ‘jsonlite’, ‘mime’, ‘openssl’, ‘plyr’, ‘generics’, ‘glue’, ‘pillar’, ‘tibble’, ‘tidyselect’, ‘vctrs’, ‘xts’, ‘zoo’, ‘TTR’, ‘cellranger’, ‘cpp11’, ‘broom’, ‘conflicted’, ‘dbplyr’, ‘dtplyr’, ‘forcats’, ‘googledrive’, ‘googlesheets4’, ‘haven’, ‘lubridate’, ‘modelr’, ‘ragg’, ‘readr’, ‘reprex’, ‘rstudioapi’, ‘rvest’, ‘stringr’, ‘tidyr’, ‘xml2’, ‘httpuv’, ‘xtable’, ‘fontawesome’, ‘htmltools’, ‘sourcetools’, ‘later’, ‘promises’, ‘fastmap’, ‘commonmark’, ‘bslib’, ‘cachem’, ‘stringdist’, ‘geosphere’, ‘evaluate’, ‘highr’, ‘yaml’, ‘xfun’, ‘rmarkdown’, ‘viridisLite’, ‘webshot’, ‘digest’, ‘svglite’, ‘gtable’, ‘isoband’, ‘farver’, ‘labeling’, ‘munsell’, ‘tweenr’, ‘polyclip’, ‘systemfonts’, ‘RcppEigen’, ‘ps’, ‘base64enc’, ‘htmlwidgets’, ‘lazyeval’, ‘crosstalk’, ‘extrafontdb’, ‘Rttf2pt1’
+
+"
+"1","
+"
+"1",""
+"1","  There is a binary version available but the source version is later"
+"1",""
+"1",":
+"

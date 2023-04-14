@@ -1,0 +1,47 @@
+# ----------------------------------------
+# setup.R
+# subset of Holsman et al. 2020 Nature Comm.
+# kirstin.holsman@noaa.gov
+# updated 2020
+# ----------------------------------------
+  
+    # switches and options:
+    #-------------------------------------------
+   
+
+    
+    # Holsman Risk thresholds/limits (used for threhold/tipping point analysis)
+    #-------------------------------------------
+    limlist         <-  c(-10,-50,-80)  # % thresholds for decline, severe decline, collapse relative to persistence scenario
+    
+    
+    # Holsman threshold settings:
+    #-------------------------------------------
+    rndNIN       <-  6 # sig digits for rounding the first and second derivatives
+    boot_nobsIN  <-  1000  # this controls the sensitivity of the analysis
+    nitrIN       <-  1000
+    t_knots      <-  4   # numnber of knots for the threshold gams
+    span_set     <-  0.1  # smoothing step/span for thresholds
+    methodIN     <-  2   # method for getting the threshold significance
+    
+    # Species stuff: (used for plotting and manipulating data)
+    #-------------------------------------------
+    sppINFO<-list(
+      plk=list(abv="plk",
+               guildIN="Walleye pollock",
+               plotSPP="walleye pollock",
+               bin2=c(seq(0,300,10),1000),
+               binJvAD=c(0,40,1000),
+               splistIN="W. Pollock",doNEBS=T,plotIT=T),
+      pcod=list(abv="pcod",
+                guildIN="Pacific cod",
+                plotSPP="Pacific cod",
+                bin2=c(seq(0,300,10),1000),
+                binJvAD=c(0,40,1000),
+                splistIN="P. Cod",doNEBS=T,plotIT=T),
+      atf=list(abv="atf",
+               guildIN="Arrowtooth or Kamchatka",
+               plotSPP="arrowtooth flounder",
+               bin2=c(seq(0,300,10),1000),
+               binJvAD=c(0,40,1000),
+               splistIN=c("Arrowtooth","Arrow or Kam", "Kamchat fl"),doNEBS=F,plotIT=T))
