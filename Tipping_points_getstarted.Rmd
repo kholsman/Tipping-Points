@@ -226,12 +226,36 @@ Let's first explore the tipping point calculations using Pacific cod biomass ('B
 ```{r threshold_STEP1,eval=T,include=T,echo=T, results='hide',message=FALSE}
 
   datIN <- B_thresh_12_2$datIN
+  datIN$rand  <- 1
+  datIN$group <- paste0(datIN$MC_n,"_",datIN$Scenario,"_", datIN$sp)
+  datIN$groupN<- as.numeric(as.factor(datIN$group)) 
+  datIN$YearN <- datIN$Year- min(datIN$Year)+1
   x     <- seq(-3,10,.1) 
   
-# Fit gam
+  # Based on code from E. Hazen and M. Hunsicker WG36 (PICES)
+  
+
+  # Fit gam with and without autocorrelation 
   #------------------------------------
   tmp_gam   <-  gam(delta_var_prcnt ~ s(TempC,k=t_knots,bs="tp"),data = datIN)
+  tmp_gamAR <-  gamm(delta_var_prcnt ~ s(TempC,k=t_knots,bs="tp"),
+                     random=list(groupN=~1),correlation=corAR1(form=~YearN),data = datIN)
+  datIN$dev.resid  <- residuals(tmp_gam,type='deviance')
+   datIN$dev.resid <- residuals(tmp_gamAR$gam,type='deviance')
+
+  # fit the null model
+  null      <- gam(delta_var_prcnt ~ 1,family='gaussian',data = datIN)
+  dr        <- sum(residuals(tmp_gam)^2)
+  dn0       <- sum(residuals(null)^2)
+  dr2       <- sum(residuals(tmp_gamAR$gam)^2)
+  dr2_lme   <- sum(residuals(tmp_gamAR$lme)^2)
+  gam.dev.expl    <- (dn0-dr)/dn0
+  gamAR2.dev.expl <- (dn0-dr2)/dn0
+  
+  # from here out use the non-AR gam for the demo
+
   hat       <-  predict(tmp_gam,se.fit=TRUE, newdata = data.frame(TempC=x) )
+  hat2      <-  predict(tmp_gamAR$gam,se.fit=TRUE, newdata = data.frame(TempC=x) )
   dd        <-  datIN%>%mutate(TempC = round(TempC,2) )%>%select(TempC, delta_var_prcnt)
   dd$num    <-  1:length(dd[,1])
   

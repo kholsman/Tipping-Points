@@ -2984,12 +2984,36 @@ gam</h3>
 biomass (‘B_thresh_12_1’) or catch (‘C_thresh_12_1’) for scenarios
 without the 2 MT cap effects (’_12_1’).</p>
 <pre class="r"><code>  datIN &lt;- B_thresh_12_2$datIN
+  datIN$rand  &lt;- 1
+  datIN$group &lt;- paste0(datIN$MC_n,&quot;_&quot;,datIN$Scenario,&quot;_&quot;, datIN$sp)
+  datIN$groupN&lt;- as.numeric(as.factor(datIN$group)) 
+  datIN$YearN &lt;- datIN$Year- min(datIN$Year)+1
   x     &lt;- seq(-3,10,.1) 
   
-# Fit gam
+  # Based on code from E. Hazen and M. Hunsicker WG36 (PICES)
+  
+
+  # Fit gam with and without autocorrelation 
   #------------------------------------
   tmp_gam   &lt;-  gam(delta_var_prcnt ~ s(TempC,k=t_knots,bs=&quot;tp&quot;),data = datIN)
+  tmp_gamAR &lt;-  gamm(delta_var_prcnt ~ s(TempC,k=t_knots,bs=&quot;tp&quot;),
+                     random=list(groupN=~1),correlation=corAR1(form=~YearN),data = datIN)
+  datIN$dev.resid  &lt;- residuals(tmp_gam,type=&#39;deviance&#39;)
+   datIN$dev.resid &lt;- residuals(tmp_gamAR$gam,type=&#39;deviance&#39;)
+
+  # fit the null model
+  null      &lt;- gam(delta_var_prcnt ~ 1,family=&#39;gaussian&#39;,data = datIN)
+  dr        &lt;- sum(residuals(tmp_gam)^2)
+  dn0       &lt;- sum(residuals(null)^2)
+  dr2       &lt;- sum(residuals(tmp_gamAR$gam)^2)
+  dr2_lme   &lt;- sum(residuals(tmp_gamAR$lme)^2)
+  gam.dev.expl    &lt;- (dn0-dr)/dn0
+  gamAR2.dev.expl &lt;- (dn0-dr2)/dn0
+  
+  # from here out use the non-AR gam for the demo
+
   hat       &lt;-  predict(tmp_gam,se.fit=TRUE, newdata = data.frame(TempC=x) )
+  hat2      &lt;-  predict(tmp_gamAR$gam,se.fit=TRUE, newdata = data.frame(TempC=x) )
   dd        &lt;-  datIN%&gt;%mutate(TempC = round(TempC,2) )%&gt;%select(TempC, delta_var_prcnt)
   dd$num    &lt;-  1:length(dd[,1])</code></pre>
 </div>
@@ -3622,7 +3646,6 @@ presence of hysteresis, we then perform the stochastic cusp model.</p>
 
 load(&quot;Data/data_ex.RData&quot;) 
 
-
 # -----------------------------------
 # fit the stochastic cusp model
 # -----------------------------------
@@ -3649,6 +3672,7 @@ pred.community$Y = fit_community$y
 head(pred.community)
 
 # calculate Cardan´s discriminant (delta): 27*alpha^2-4beta^3 =&gt; this one help us to define the presence of multiple equilibria.
+
 delta.community = 27*(pred.community$alpha^2) - 4* (pred.community$beta^3)
 pred.community$delta = delta.community 
 
