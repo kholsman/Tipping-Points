@@ -1,17 +1,17 @@
 ---
 title: "SICCME/S-CCME Tipping Points ECCWO5 Workshop"
 author: K. Holsman, K. Mills, E. Hazen
+email: kirstin.holsman@noaa.gov
 always_allow_html: true
 output:
-  pdf_document:
-    toc: TRUE
+  html_document:
+    df_print: paged
+    toc: true
     toc_depth: 3
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 5
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
   header-includes:
   - \usepackage{knputenc}
   - \usepackage{unicode-math}
@@ -22,14 +22,15 @@ output:
     fig_caption: yes
     fig_width: 4
     keep_md: yes
-  html_document:
-    df_print: paged
-    toc: true
+  pdf_document:
+    toc: TRUE
     toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
 #runtime: shiny
 ---
 
@@ -151,10 +152,11 @@ This document provides an overview of accessing, plotting, and demoing Tipping P
 
 Below is an example analysis from Holsman et al. 2020 where threshold analysis was used to detect a thermal tipping point in biomass and catch for Bering Sea groundfish.
 
-From Large et al. "The shape of the relationship between a response and pressure is captured in the smoothing function s(X). Values of the pressure variable that influence the response in a particular direction can be enumerated by recognizing qualities of the shape of the smoothing function. The first derivative sˆ’(X) of s(X) indicates regions where a pressure variable causes a negative [sˆ’(X) , 0] or positive [sˆ’(X) . 0] response to an ecological indicator. Further, the second derivative sˆ”(X) denotes regions where ˆs’(X) changes sign and a threshold is crossed [0 , sˆ”(X) . 0]. To measure the uncertainty surrounding both sˆ’(X)and sˆ”(X), we estimated the first and second derivatives using finite differ- ences for each bootstrap replicated smoothing term sbr(X). Both ˆsi’(X)and sˆi”(X) were sorted into ascending order and the value of the  2.5% and 97.5% quantiles of sˆi’(X)and sˆi”(X)were considered the 95% CI for the first and second derivative of the smoothing function (Buckland, 1984). A significant trend sˆ’(X) or threshold sˆ”(X) was identified  when the 95% CI crossed zero for either derivative (Fewster et al., 2000; Lindegren et al., 2012). "
-    from Samhouri et al. and red dotted arrow indicates the best estimate of the location of the threshold (i.e., where the second  derivative is most difference from zero within the threshold range).
-    
 ![From Holsman et al. 2020](Figs/Holsman2.png)
+
+This approach fits a gam (with or without autocorrelation) to a response variable as a function of an environmental driver (e.g., temperature). The first and second derivatives of the gam are used to detect the presence of a threshold and tipping point. See (Large et al. 2013)[https://academic.oup.com/icesjms/article/70/4/755/727721] and (Samhouri et al. 2017)[https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecs2.1860] for more information and a stepwise approach to threshold analysis.
+
+From Large et al. 2013 "The shape of the relationship between a response and pressure is captured in the smoothing function s(X). Values of the pressure variable that influence the response in a particular direction can be enumerated by recognizing qualities of the shape of the smoothing function. The first derivative sˆ’(X) of s(X) indicates regions where a pressure variable causes a negative [sˆ’(X) , 0] or positive [sˆ’(X) . 0] response to an ecological indicator. Further, the second derivative sˆ”(X) denotes regions where ˆs’(X) changes sign and a threshold is crossed [0 , sˆ”(X) . 0]. To measure the uncertainty surrounding both sˆ’(X)and sˆ”(X), we estimated the first and second derivatives using finite differ- ences for each bootstrap replicated smoothing term sbr(X). Both ˆsi’(X)and sˆi”(X) were sorted into ascending order and the value of the  2.5% and 97.5% quantiles of sˆi’(X)and sˆi”(X)were considered the 95% CI for the first and second derivative of the smoothing function (Buckland, 1984). A significant trend sˆ’(X) or threshold sˆ”(X) was identified  when the 95% CI crossed zero for either derivative (Fewster et al., 2000; Lindegren et al., 2012). "
 
 
 ### Download the data from Holsman et al. 2020
@@ -755,7 +757,7 @@ plot1
 
 ## Stochastic cusp modelling (SCM)
 
-**["Camilla Sguotti"](camilla.sguotti@unipd.it) & ["Christian Moellmann"](chritsian.moellmann@uni-hamburg.de) **
+**(Camilla Sguotti)[camilla.sguotti@unipd.it] & (Christian Moellmann)[chritsian.moellmann@uni-hamburg.de] **
 
 ### SCM Suumary
 From Möllmann et al. ["2021"](https://doi.org/10.1038/s41598-021-93843-z):
