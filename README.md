@@ -1,3 +1,8 @@
+Repo maintained by: Kirstin Holsman  
+Alaska Fisheries Science Center  
+NOAA Fisheries, Seattle WA  
+**<kirstin.holsman@noaa.gov>**
+
 [“5th Effects of Climate Change on the World’s Oceans
 Meeting”](https://meetings.pices.int/meetings/international/2023/eccwo-5/Background)
 
@@ -92,11 +97,7 @@ the full Tipping-Points directory and sub-directories:
 
 ------------------------------------------------------------------------
 
-# Get the data
-
-<!-- ![](Figs/DATA_dir2.png){ width=50%} -->
-
-## Set up the Workspace
+# Set up the Workspace
 
 Open R() and used ‘setwd()’ to navigate to the root ACLIM2 folder (.e.g,
 \~/mydocuments/ACLIM2)
@@ -126,41 +127,48 @@ Open R() and used ‘setwd()’ to navigate to the root ACLIM2 folder (.e.g,
 This document provides an overview of accessing, plotting, and demoing
 Tipping Point analyses. Below are three example vignettes for tipping
 point analysis : Thresholds analysis courtesy of Kirstin Holsman
-[kirstin.holsman@noaa.gov](kirstin.holsman@noaa.gov), IRA courtesy of
-Manuel Hidalgo [jm.hidalgo@ieo.csic.es](jm.hidalgo@ieo.csic.es), and
-Stochastic CUSP modelling (SCM) courtesy of Camilla Sguotti
-([camilla.sguotti@unipd.it](camilla.sguotti@unipd.it).
+(<kirstin.holsman@noaa.gov>), IRA courtesy of Manuel Hidalgo
+(<jm.hidalgo@ieo.csic.es>), and Stochastic CUSP modelling (SCM) courtesy
+of Camilla Sguotti (<camilla.sguotti@unipd.it>).
 
 ## Threshold analysis
 
 ### Thresholds summary
 
-Below is an example analysis from Holsman et al. 2020 where threshold
-analysis was used to detect a thermal tipping point in biomass and catch
-for Bering Sea groundfish.
-
-From Large et al. “The shape of the relationship between a response and
-pressure is captured in the smoothing function s(X). Values of the
-pressure variable that influence the response in a particular direction
-can be enumerated by recognizing qualities of the shape of the smoothing
-function. The first derivative sˆ’(X) of s(X) indicates regions where a
-pressure variable causes a negative \[sˆ’(X) , 0\] or positive \[sˆ’(X)
-. 0\] response to an ecological indicator. Further, the second
-derivative sˆ”(X) denotes regions where ˆs’(X) changes sign and a
-threshold is crossed \[0 , sˆ”(X) . 0\]. To measure the uncertainty
-surrounding both sˆ’(X)and sˆ”(X), we estimated the first and second
-derivatives using finite differ- ences for each bootstrap replicated
-smoothing term sbr(X). Both ˆsi’(X)and sˆi”(X) were sorted into
-ascending order and the value of the 2.5% and 97.5% quantiles of
-sˆi’(X)and sˆi”(X)were considered the 95% CI for the first and second
-derivative of the smoothing function (Buckland, 1984). A significant
-trend sˆ’(X) or threshold sˆ”(X) was identified when the 95% CI crossed
-zero for either derivative (Fewster et al., 2000; Lindegren et al.,
-2012). ” from Samhouri et al. and red dotted arrow indicates the best
-estimate of the location of the threshold (i.e., where the second
-derivative is most difference from zero within the threshold range).
+Below is an example analysis from (Holsman et
+al. 2020)\[<https://www.nature.com/articles/s41467-020-18300-3>\] where
+threshold analysis was used to detect a thermal tipping point in biomass
+and catch for Bering Sea groundfish.
 
 ![From Holsman et al. 2020](Figs/Holsman2.png)
+
+This approach fits a gam (with or without autocorrelation) to a response
+variable as a function of an environmental driver (e.g., temperature).
+The first and second derivatives of the gam are used to detect the
+presence of a threshold and tipping point. See (Large et
+al. 2013)\[<https://academic.oup.com/icesjms/article/70/4/755/727721>\]
+and (Samhouri et
+al. 2017)\[<https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecs2.1860>\]
+for more information and a stepwise approach to threshold analysis.
+
+From Large et al. 2013: *“The shape of the relationship between a
+response and pressure is captured in the smoothing function *S*(*x*).
+Values of the pressure variable that influence the response in a
+particular direction can be enumerated by recognizing qualities of the
+shape of the smoothing function. The first derivative *Ŝ*(*x*)′ of
+*s*(*X*) indicates regions where a pressure variable causes a negative
+\[*Ŝ*(*x*)′, 0\] or positive \[*Ŝ*(*x*)′ . 0\] response to an ecological
+indicator. Further, the second derivative *Ŝ*(*x*)″ denotes regions
+where *Ŝ*(*x*)′ changes sign and a threshold is crossed \[0 , *Ŝ*(*x*)″
+. 0\]. To measure the uncertainty surrounding both *Ŝ*(*x*)′ and
+*Ŝ*(*x*)″, we estimated the first and second derivatives using finite
+differences for each bootstrap replicated smoothing term *s**b**r*(*x*).
+Both $\hat{S_i}(x)'$ and$\hat{S_i}(x)''$ were sorted into ascending
+order and the value of the 2.5% and 97.5% quantiles of $\hat{S_i}(x)'$
+and$\hat{S_i}(x)''$ were considered the 95% CI for the first and second
+derivative of the smoothing function (Buckland, 1984). A significant
+trend *Ŝ*(*x*)′ or threshold *Ŝ*(*x*)″ was identified when the 95% CI
+crossed zero for either derivative.”*
 
 ### Download the data from Holsman et al. 2020
 
@@ -221,19 +229,47 @@ derivative is most difference from zero within the threshold range).
                                   max(abs(df2_qnt$smoothed_up[thrsh2_all]))  )])  ]
 ```
 
-### Step 1: fit gam
+### Step 1: Fit gam()
 
 Let’s first explore the tipping point calculations using Pacific cod
-biomass (‘B_thresh_12_1’) or catch (‘C_thresh_12_1’) for scenarios
-without the 2 MT cap effects (’\_12_1’).
+biomass (‘B_thresh_12_2’) or catch (‘C_thresh_12_2’) for scenarios with
+the 2 MT cap effects (’\_13_1’).
 
 ``` r
-  datIN <- B_thresh_12_2$datIN
+  # change in change from persistence scenario for P. cod with effects of 2 MT cap
+  datIN        <- C_thresh_13_2$datIN  
+  # Alternatives to play around with:
+  # ------------------------------------
+  # change in catch from persistence scenario for P. cod without effects of 2 MT cap
+  # datIN        <- C_thresh_12_2$datIN  
+  # change in Biomass from persistence scenario for P. cod without effects of 2 MT cap
+  # datIN        <- B_thresh_12_2$datIN  
+  # change in catch from persistence scenario for Pollock without effects of 2 MT cap
+  # datIN        <- C_thresh_12_1$datIN  
+
+
+  datIN$rand   <- 1
+  datIN$group  <- paste0(datIN$MC_n,"_",datIN$Scenario,"_", datIN$sp)
+  datIN$groupN <- as.numeric(as.factor(datIN$group)) 
+  datIN$YearN  <- datIN$Year- min(datIN$Year)+1
   x     <- seq(-3,10,.1) 
   
-# Fit gam
+  # Based on code from E. Hazen and M. Hunsicker WG36 (PICES)
+  
+
+  # Fit gam with and without autocorrelation 
   #------------------------------------
   tmp_gam   <-  gam(delta_var_prcnt ~ s(TempC,k=t_knots,bs="tp"),data = datIN)
+  datIN$dev.resid  <- residuals(tmp_gam,type='deviance')
+
+  # fit the null model
+  null      <- gam(delta_var_prcnt ~ 1,family='gaussian',data = datIN)
+  dr        <- sum(residuals(tmp_gam)^2)
+  dn0       <- sum(residuals(null)^2)
+  gam.dev.expl    <- (dn0-dr)/dn0
+  
+  # from here out use the non-AR gam for the demo
+
   hat       <-  predict(tmp_gam,se.fit=TRUE, newdata = data.frame(TempC=x) )
   dd        <-  datIN%>%mutate(TempC = round(TempC,2) )%>%select(TempC, delta_var_prcnt)
   dd$num    <-  1:length(dd[,1])
@@ -241,18 +277,17 @@ without the 2 MT cap effects (’\_12_1’).
 
 ### Step 2: Bootstrap for error
 
-We measured uncertainty surrounding each tmp_gam by using a naive
+We now measure uncertainty surrounding each GAM by using a naive
 bootstrap with random sampling and replacement. For each
 indicator–pressure combination, bootstrap replicates were selected from
-the raw data and each was fitted with a tmp_gam.
+the raw data and each was fitted with a GAM.
 
-For pressure–state relationships identified as nonlinear, we defined the
+For pressure–state relationships identified as nonlinear, we define the
 location of the threshold as the inflection point, that is, the value of
-the pressure where the second derivative changed sign (Fewster et
-al. 2000, Bestelmeyer et al. 2011, Samhouri et al. 2012, Large et
+the pressure where the second derivative changed sign (Large et
 al. 2013). For these analyses, we calculated the 95% CI of the smoothing
 function itself, along with its second derivative, via bootstrapping of
-the residuals in order to allow for autocorrelation.
+the residuals.
 
 ``` r
   # pre-allocate 'NA' Matrix
@@ -464,21 +499,21 @@ the residuals in order to allow for autocorrelation.
 ### IRA summary
 
 Integrative Resilience Analysis’ (IRA) to two case studies: Western
-Mediterranean and Iberian Seas in the Atlantic ([“Hidalgo et al
-2022”](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648),
-[“Polo et
-al. 2022”](https://academic.oup.com/icesjms/article/79/7/2017/6648917)).
+Mediterranean and Iberian Seas in the Atlantic ([Hidalgo et al
+2022](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648),
+[Polo et
+al. 2022](https://academic.oup.com/icesjms/article/79/7/2017/6648917)).
 
-From Hidalgo et al. 2022: “The IRA is a three-step methodological
+From Hidalgo et al. 2022: *“The IRA is a three-step methodological
 framework which applies the concepts of resilience and folded stability
 landscapes in an empirical multivariate context through the combination
 of multivariate analysis, non-additive modelling and a resilience
 assessment (Vasilakopoulos et al.,
-[”2017”](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0042)).
+[2017](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0042)).
 This way, the IRA elucidates the system dynamics and shift mechanisms in
-response to external stressors.”
+response to external stressors.”*
 
-From Polo et al. 2022: “In the IRA framework, the relationship between
+From Polo et al. 2022: *“In the IRA framework, the relationship between
 PCsys and its drivers is assessed using PCsys as response variable in
 generalized additive models (GAMs) and threshold-GAMs (TGAMs) (Cianelli
 et al., 2004). Each of the four stressors with 0, 1, and 2 years of lag
@@ -492,19 +527,21 @@ basic GAM function used is included in R package mgcv (Wood, 2011). The
 “genuine” cross-validatory squared prediction error (gCV), a
 modification of generalized cross validation proposed by Cianelli et
 al. (2004) that makes the goodness of fit of GAMs and TGAMs comparable,
-was computed for model selection and estimation of the threshold year. ”
+was computed for model selection and estimation of the threshold year.”*
 
 The IRA was carried out in R (R Core Team, 2019) using packages vegan
 (Oksanen et al.,
-[“2019”](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0027)),
+[2019](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0027)),
 mgcv (Wood,
-[“2017”](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0045))
+[2017](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0045))
 and akima (Akima et al.,
-[“2015”](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0001)).
+[2015](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13648#jane13648-bib-0001)).
 
 ### IRA step by step
 
 ### Step 1. PCA
+
+**Code courtesy of Manuel Hidalgo (<jm.hidalgo@ieo.csic.es>)**
 
 Apply PCA to the time-species matrix of each studied area to identify
 the main modes of community variability.PCAs are based on the
@@ -565,9 +602,11 @@ describes the two as *” A GAM describes a system that changes in a
 continuous way in response to the corresponding change of its
 stressor(s), while a TGAM represents a system response curve that is
 folded backwards, forming a fold bifurcation with two tipping points
-(Figure S1).”*. They further used the following methods:
+(Figure S1).”*.
 
-3.1. *“fit 18 GAMs and 18 TGAMs (3 stressors × 2 seasons × 3 lags) for
+They further used the following methods:
+
+3.1. *“Fit 18 GAMs and 18 TGAMs (3 stressors × 2 seasons × 3 lags) for
 each system, using either PC1 or PC2 as a response variable.”*. The fits
 of relevant generalized additive models (GAMs) and non-additive
 threshold GAMs (TGAMs) at 0- to 2-time lags response variable (PC1 or
@@ -639,7 +678,8 @@ al., 2004)”* in order to evaluate goodness of fit of GAMs and TGAMs.
 ```
 
 <img src="Tipping_points_getstarted_files/figure-markdown_github/IRA_STEP3-2.png" style="display: block; margin: auto;" />
-\### Step 4. Calculate the position of the tipping point of each regime
+
+### Step 4. Calculate the position of the tipping point of each regime
 
 Calculate the position of the tipping point of each regime along the
 trajectory of its respective attractor. Note that *“the x-coordinates of
@@ -809,14 +849,13 @@ plot1
 
 ## Stochastic cusp modelling (SCM)
 
-**[“Camilla Sguotti”](camilla.sguotti@unipd.it) & [“Christian
-Moellmann”](chritsian.moellmann@uni-hamburg.de) **
+**Camilla Sguotti(<camilla.sguotti@unipd.it> & Christian
+Moellmann(<chritsian.moellmann@uni-hamburg.de>) **
 
 ### SCM Suumary
 
-From Möllmann et
-al. [“2021”](https://doi.org/10.1038/s41598-021-93843-z): “SCM is based
-on catastrophe theory, popular in the 1970s21,22, but recently
+From Möllmann et al. [2021](https://doi.org/10.1038/s41598-021-93843-z):
+*“SCM is based on catastrophe theory, popular in the 1970s, but recently
 rediscovered in a number of research fields including fisheries
 science.The cusp is one of seven geometric elements in catastrophe
 theory and represents a 3D surface combining linear and non-linear
@@ -839,19 +878,19 @@ stable which indicates a high degree of irreversibility
 comprehensive model validation that revealed our fitted SCM to be
 superior to alternative linear and logistic models, explaining a large
 portion of the variability in the data and fulfilling additional
-criteria for this model type to be valid.”
+criteria for this model type to be valid.”*
 
 ![From Möllmann et al. 2021](Figs/fig1.png)
 
 ### Background
 
 The stochastic cusp model was developed by the mathematician Rene Thom
-in the 1980s and allows to model the dynamics of a state variable
+in the 1980s and allows for modeling the dynamics of a state variable
 depending on two interactive drivers. The model is based on a cubic
 differential equation extended with a Wiener´s process to add
 stochasticity.
 
- − *V*(*z*<sub>*t*</sub>,*α*,*β*) =  − 1/4*z*<sub>*t*</sub><sup>4</sup> + 1/2〖*β**z*〗<sub>*t*</sub><sup>2</sup> + *α**z*<sub>*t*</sub>
+ − *V*(*z*<sub>*t*</sub>,*α*,*β*) =  − 1/4*z*<sub>*t*</sub><sup>4</sup> + 1/2*β**z*<sub>*t*</sub><sup>2</sup> + *α**z*<sub>*t*</sub>
 
 where *V*(*z*<sub>*t*</sub>,*α*,*β*) is a potential function whose slope
 represents the rate of change of the system (the system state variable
@@ -889,7 +928,7 @@ The stochastic cusp model is thus able to detect three different types
 of dynamics of the state variable, linear and continuous, non-linear and
 continuous and discontinuous. Moreover the model compare the stochastic
 cusp model to two continuous alternatives, a linear model and a logistic
-model
+model.
 
 For more info see Sguotti et al., 2019, 2022; Moellmann et al., 2022;
 Diks and Wang 2016, Petraitis et al., 2016; Dakos and Kefi 2022.
@@ -898,8 +937,8 @@ Diks and Wang 2016, Petraitis et al., 2016; Dakos and Kefi 2022.
 
 Before applying the model we usually do the typical screening (change
 point analysis, driver-state plots, bimodality of the state
-variable).This preliminary screening allows us to hypothesise the
-presence of tipping points in our state variable.
+variable).This preliminary screening allows us to hypothesize the
+presence of tipping points in the state variable.
 
 To confirm the presence of tipping points and in particular the presence
 of hysteresis, we then perform the stochastic cusp model.
