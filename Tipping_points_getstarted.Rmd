@@ -186,7 +186,7 @@ Let's first explore the tipping point calculations using Pacific cod biomass ('B
   datIN <- datIN%>%dplyr::select(Year,
                                  driver   = TempC,
                                  response = delta_var_prcnt,
-                                 MC_n , Scenario) 
+                                 MC_n , Scenario)
   
   # Add columns for grouping (optional for autocorrelation grouping in gamm)
   datIN$rand   <- 1    
