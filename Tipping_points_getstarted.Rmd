@@ -175,7 +175,7 @@ From Large et al. 2013:
 
 ### Explore the threshold function 
 
-```{r threshold_STEP0,eval=T,include=F,echo=T, results='hide',message=FALSE}
+```{r threshold_STEP0,eval=T,include=T,echo=T, results='hide',message=FALSE}
 
    source("R/make.R")  # set up the Rcode and load packages and data
 
@@ -262,7 +262,7 @@ Let's first explore the tipping point calculations using Pacific cod biomass ('B
   # from here out use the non-AR gam for the demo
 
   hat       <-  predict(tmp_gam,se.fit=TRUE, newdata = data.frame(driver=x) )
-  dd        <-  datIN%>%mutate(driver = round(TempC,2) )%>%select(driver, delta_var_prcnt)
+  dd        <-  datIN%>%mutate(driver = round(driver,2) )%>%select(driver, delta_var_prcnt)
   dd$num    <-  1:length(dd[,1])
   
 ```
@@ -367,9 +367,9 @@ For pressure–state relationships identified as nonlinear, we define the locati
   hat_qnt$smoothed_up  <- predict(loess(up ~ tmp, data=hat_qnt, span=spanIN)) 
 
    ggplot(rbind(
-     hat_qnt%>%select(TempC=tmp,up, mn, dwn)%>%mutate(method="not smoothed"),
-     hat_qnt%>%select(TempC=tmp,up=smoothed_up, mn=smoothed_mn, dwn=smoothed_dwn)%>%mutate(method="smoothed")))+
-  geom_ribbon(aes(x=TempC, ymin=dwn, ymax=up,fill=method))+
+     hat_qnt%>%select(datIN=tmp,up, mn, dwn)%>%mutate(method="not smoothed"),
+     hat_qnt%>%select(datIN=tmp,up=smoothed_up, mn=smoothed_mn, dwn=smoothed_dwn)%>%mutate(method="smoothed")))+
+  geom_ribbon(aes(x=datIN, ymin=dwn, ymax=up,fill=method))+
      facet_grid(method~.)+
   scale_fill_viridis_d(begin = .8, end=0)+
   theme_minimal()
@@ -410,9 +410,9 @@ For pressure–state relationships identified as nonlinear, we define the locati
   
   
   ggplot(rbind(
-    hat_qnt%>%select(TempC = tmp,up=smoothed_up, mn=smoothed_mn, dwn=smoothed_dwn)%>%mutate(method="a) smoothed gam (s(x))"),
-    df1_qnt%>%select(TempC = tmp,up=smoothed_up, mn=smoothed_mn, dwn=smoothed_dwn)%>%mutate(method="b) First Deriv (s'(x)")))+
-  geom_ribbon(aes(x=TempC, ymin=dwn, ymax=up,fill=method))+facet_grid(method~.,scales="free_y")+
+    hat_qnt%>%select(datIN = tmp,up=smoothed_up, mn=smoothed_mn, dwn=smoothed_dwn)%>%mutate(method="a) smoothed gam (s(x))"),
+    df1_qnt%>%select(datIN = tmp,up=smoothed_up, mn=smoothed_mn, dwn=smoothed_dwn)%>%mutate(method="b) First Deriv (s'(x)")))+
+  geom_ribbon(aes(x=datIN, ymin=dwn, ymax=up,fill=method))+facet_grid(method~.,scales="free_y")+
   scale_fill_viridis_d(begin = .8, end=.1)+
   theme_minimal()
    
@@ -443,19 +443,19 @@ For pressure–state relationships identified as nonlinear, we define the locati
   
    
    plot1<- ggplot(rbind(
-    hat_qnt%>%select(TempC = tmp,up=smoothed_up, mn=smoothed_mn, 
+    hat_qnt%>%select(driver = tmp,up=smoothed_up, mn=smoothed_mn, 
                      dwn=smoothed_dwn,sig)%>%mutate(method="a) smoothed gam (s(x))"),
-    df1_qnt%>%select(TempC = tmp,up=smoothed_up, mn=smoothed_mn, 
+    df1_qnt%>%select(driver = tmp,up=smoothed_up, mn=smoothed_mn, 
                      dwn=smoothed_dwn,sig)%>%mutate(method="b) First Deriv (s'(x)"),
-    df2_qnt%>%select(TempC = tmp,up=smoothed_up, mn=smoothed_mn,
+    df2_qnt%>%select(driver = tmp,up=smoothed_up, mn=smoothed_mn,
                      dwn=smoothed_dwn,sig)%>%mutate(method="c) Second Deriv (s''(x)")))+
-     geom_ribbon(aes(x=TempC, ymin=dwn, ymax=up,fill=method))+
+     geom_ribbon(aes(x=driver, ymin=dwn, ymax=up,fill=method))+
      facet_grid(method~.,scales="free_y")+
      geom_hline(yintercept=0,color="white")+
      scale_fill_viridis_d(begin = .8, end=.1)+
      theme_minimal()
    
-  plot1 + geom_mark_rect(aes(x=TempC, y=up,fill = sig, label = "sig. range"))+
+  plot1 + geom_mark_rect(aes(x=driver, y=up,fill = sig, label = "sig. range"))+
     geom_vline (xintercept =df2_qnt$tmp[thrsh2], color = "red")
   
   # now use the threshold function to do the above:
