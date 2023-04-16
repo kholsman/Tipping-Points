@@ -1,7 +1,0 @@
-"0",""
-"0","   source(""R/make.R"")  # set up the Rcode and load packages and data"
-"1"," Loading Holsman et al. 2020 dataset from 
- https://github.com/kholsman/EBM_Holsman_NatComm
---------------------------------
-"
-"0","   head(risk12)  # preview the risk table for ""No cap"" simulations"

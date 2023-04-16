@@ -5,9 +5,10 @@
 tmp_gam   <-  gam(delta_var_prcnt ~ s(TempC,k=t_knots,bs="tp"),data = datIN)
 tmp_gamAR <-  gamm(delta_var_prcnt ~ s(TempC,k=t_knots,bs="tp"),
                    random=list(groupN=~1),correlation=corAR1(form=~YearN),data = datIN)
+datIN$dev.resid  <- residuals(tmp_gamAR$gam,type='deviance')
 fitted(tmp_gamAR$gam)
 datIN$dev.resid  <- residuals(tmp_gam,type='deviance')
-datIN$dev.resid  <- residuals(tmp_gamAR$gam,type='deviance')
+
 
 # fit the null model
 null      <- gam(delta_var_prcnt ~ 1,family='gaussian',data = datIN)

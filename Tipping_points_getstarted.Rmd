@@ -158,76 +158,16 @@ From Large et al. 2013:
 *"The shape of the relationship between a response and pressure is captured in the smoothing function $S(x)$. Values of the pressure variable that influence the response in a particular direction can be enumerated by recognizing qualities of the shape of the smoothing function. The first derivative $\hat{S}(x)'$ of $s(X)$ indicates regions where a pressure variable causes a negative [$\hat{S}(x)'$, 0] or positive [$\hat{S}(x)'$ . 0] response to an ecological indicator. Further, the second derivative $\hat{S}(x)''$ denotes regions where $\hat{S}(x)'$ changes sign and a threshold is crossed [0 , $\hat{S}(x)''$ . 0]. To measure the uncertainty surrounding both $\hat{S}(x)'$ and $\hat{S}(x)''$, we estimated the first and second derivatives using finite differences for each bootstrap replicated smoothing term $sbr(x)$. Both $\hat{S_i}(x)'$ and$\hat{S_i}(x)''$ were sorted into ascending order and the value of the 2.5% and 97.5% quantiles of $\hat{S_i}(x)'$ and$\hat{S_i}(x)''$ were considered the 95% CI for the first and second derivative of the smoothing function (Buckland, 1984). A significant trend $\hat{S}(x)'$ or threshold $\hat{S}(x)''$ was identified  when the 95% CI crossed zero for either derivative. "*
 
 
-### Download the data from Holsman et al. 2020
-```{r thresholds, echo =T, eval=F, include = T}
 
-    cat("The download takes a few mins (large data files: 251.5 MB)...\n")
-
-    url <-   "https://figshare.com/ndownloader/files/24115769?private_link=81007e2dd5edee0a5a7a"
-    options(timeout = max(300, getOption("timeout")))
-    
-    dest_path  <-  file.path(main,"Data/data.zip")
-    download.file(url=url, destfile=dest_path,method="libcurl")
-    
-    unzip(dest_path, exdir = ".",overwrite=T)
-
-```
-
-### Explore the threshold function 
-
-```{r threshold_STEP0,eval=T,include=T,echo=T, results='hide',message=FALSE}
-
-   source("R/make.R")  # set up the Rcode and load packages and data
-
-   head(risk12)  # preview the risk table for "No cap" simulations
-   head(risk13)  # preview the risk table for "2 MT cap" simulations
-   C_thresh_12_1$thrsh_x # Temperature tipping point for pollock under "No cap" simulations
-   C_thresh_12_2$thrsh_x # Temperature tipping point for p cod under "No cap" simulations
-   C_thresh_12_3$thrsh_x # No tipping point was found for arrowtooth under "No cap" simulations
-   
- Biom_tmp <- list("No Cap" = c( 
-   B_thresh_12_1$thrsh_x,
-   B_thresh_12_2$thrsh_x,
-   B_thresh_12_3$thrsh_x),
-   "2 MT Cap" = c( 
-   B_thresh_13_1$thrsh_x,
-   B_thresh_13_2$thrsh_x,
-   B_thresh_13_3$thrsh_x))
- 
- tmp <- list("No Cap" = c( 
-   C_thresh_12_1$thrsh_x,
-   C_thresh_12_2$thrsh_x,
-   C_thresh_12_3$thrsh_x),
-   "2 MT Cap" = c( 
-   C_thresh_13_1$thrsh_x,
-   C_thresh_13_2$thrsh_x,
-   C_thresh_13_3$thrsh_x))
- 
- # get mean and var for tipping points:
- mean(as.numeric(unlist(tmp)))
- sd(as.numeric(unlist(tmp)))
-   
- # double check:
- threshIN     <- C_thresh_13_2
- thrsh2_all   <- intersect(threshIN$signif2,threshIN$ix_pks)
- df2_qnt      <- threshIN$df2_qnt
- df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_mn[thrsh2_all])  == 
-                                  max(abs(df2_qnt$smoothed_mn[thrsh2_all])) ) ] ) ]
- df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_dwn[thrsh2_all]) == 
-                                  max(abs(df2_qnt$smoothed_dwn[thrsh2_all])) )])  ]
- df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_up[thrsh2_all])  == 
-                                  max(abs(df2_qnt$smoothed_up[thrsh2_all]))  )])  ]
- 
-```
- 
 ### Step 1: Fit gam()
 
 Let's first explore the tipping point calculations using Pacific cod biomass ('B_thresh_12_2') or catch ('C_thresh_12_2') for scenarios with the 2 MT cap effects ('_13_1').
 
 ```{r threshold_STEP1,eval=T,include=T,echo=T, results='hide',message=FALSE}
   
-  # change in change from persistence scenario for P. cod with effects of 2 MT cap
-  datIN        <- C_thresh_13_2$datIN  
+  # Load setup, packages, functions and data
+  source("R/make.R") 
+
   # Alternatives to play around with:
   # ------------------------------------
   # change in catch from persistence scenario for P. cod without effects of 2 MT cap
@@ -238,31 +178,45 @@ Let's first explore the tipping point calculations using Pacific cod biomass ('B
   # datIN        <- C_thresh_12_1$datIN  
 
 
-  datIN$rand   <- 1
+  # change in catch from persistence scenario for P. cod with effects of 2 MT cap
+  datIN <- C_thresh_13_2$datIN  
+  
+  # set the response variable to the % difference in catch (or biomass) relative to the 
+  # persistence scenario, set the driver to TempC
+  datIN <- datIN%>%dplyr::select(Year,
+                                 driver   = TempC,
+                                 response = delta_var_prcnt,
+                                 MC_n , Scenario) 
+  
+  # Add columns for grouping (optional for autocorrelation grouping in gamm)
+  datIN$rand   <- 1    
   datIN$group  <- paste0(datIN$MC_n,"_",datIN$Scenario,"_", datIN$sp)
   datIN$groupN <- as.numeric(as.factor(datIN$group)) 
   datIN$YearN  <- datIN$Year- min(datIN$Year)+1
-  datIN$driver <- datIN$TempC
-  x     <- seq(-3,10,.1) 
   
   # Based on code from E. Hazen and M. Hunsicker WG36 (PICES)
-  
 
   # Fit gam with and without autocorrelation 
   #------------------------------------
-  tmp_gam   <-  gam(delta_var_prcnt ~ s(driver,k=t_knots,bs="tp"),data = datIN)
+  tmp_gam          <- gam(response ~ s(driver,k=t_knots,bs="tp"),data = datIN)
   datIN$dev.resid  <- residuals(tmp_gam,type='deviance')
+  
+  # # AR gam
+  # tmp_gamAR        <-  gamm(response ~ s(TempC,k=t_knots,bs="tp"),
+  #                           random=list(groupN=~1),correlation=corAR1(form=~YearN),data = datIN)
+  # datIN$dev.resid  <- residuals(tmp_gamAR$gam,type='deviance')
+
 
   # fit the null model
-  null      <- gam(delta_var_prcnt ~ 1,family='gaussian',data = datIN)
+  null      <- gam(response ~ 1,family='gaussian',data = datIN)
   dr        <- sum(residuals(tmp_gam)^2)
   dn0       <- sum(residuals(null)^2)
   gam.dev.expl    <- (dn0-dr)/dn0
   
   # from here out use the non-AR gam for the demo
-
+  x <-  seq(-3,10,.1) # newdata TempC vector
   hat       <-  predict(tmp_gam,se.fit=TRUE, newdata = data.frame(driver=x) )
-  dd        <-  datIN%>%mutate(driver = round(driver,2) )%>%select(driver, delta_var_prcnt)
+  dd        <-  datIN%>%mutate(driver = round(driver,2) )%>%select(driver, response)
   dd$num    <-  1:length(dd[,1])
   
 ```
@@ -282,6 +236,7 @@ For pressure–state relationships identified as nonlinear, we define the locati
   # boot_nobsIN <- 500 # uncomment this line if the code is slow
     
   # pre allocate NA Matrix
+    x <-  seq(-3,10,.1) # newdata TempC vector
     Deriv1 <- 
     Deriv2 <- 
     hatFit <- 
@@ -309,7 +264,7 @@ For pressure–state relationships identified as nonlinear, we define the locati
       boot_nobs   <- nobs
     
     bootd         <- sample_n(dd,boot_nobs,replace = TRUE)
-    tmpgam        <- gam(delta_var_prcnt~s(driver,k=knotsIN,bs="tp"),data = bootd)
+    tmpgam        <- gam(response~s(driver,k=knotsIN,bs="tp"),data = bootd)
     tmpd          <- deriv2(tmpgam,simdat=x)
     gmlist[[int]] <- tmpgam
     Deriv1[int,]  <- tmpd$fd_d1
@@ -393,9 +348,7 @@ For pressure–state relationships identified as nonlinear, we define the locati
     xx        <- round(xx,rndN2)
     delta     <- rep(NA,nn)
     updn      <- c(0, diff(sign(xx)))
-    #updn[xx==0]<-0
     ix        <- which(updn != 0)
-    #(xx[ix] + xx[ix-1])/2
     sign(updn)[ix]
     delta[ix] <- 1
     return(list(delta=delta,ix=ix,updn=updn,xx=xx))
@@ -416,7 +369,7 @@ For pressure–state relationships identified as nonlinear, we define the locati
   scale_fill_viridis_d(begin = .8, end=.1)+
   theme_minimal()
    
-   
+  # find thresholds
   pks1    <- sort(c(findPeaks(df1_qnt$smoothed_mn),findPeaks(-df1_qnt$smoothed_mn)))
   signif1 <- which(!data.table::between(0, df1_qnt$dwn, df1_qnt$up, incbounds=TRUE))
   thrsh1  <- intersect(which(!data.table::between(0, df1_qnt$dwn, df1_qnt$up, incbounds=TRUE)),pks1)
@@ -457,17 +410,28 @@ For pressure–state relationships identified as nonlinear, we define the locati
    
   plot1 + geom_mark_rect(aes(x=driver, y=up,fill = sig, label = "sig. range"))+
     geom_vline (xintercept =df2_qnt$tmp[thrsh2], color = "red")
+```
   
-  # now use the threshold function to do the above:
-  
-   B_thresh_12_2_test  <-  threshold(datIN = datIN,
-                                knotsIN=t_knots,
-                                simul_set=c(5,6,8,9,10,11),
-                                boot_nobs=boot_nobsIN,
-                                rndN=rndNIN,
-                                method=methodIN,
-                                boot_n=nitrIN)
+### Use the threshold() and plot_threshold() functions
+
+
+```{r threshold_STEP4,eval=F,include=T,echo=T, results='hide',message=FALSE}
+
     
+   # --------------------------------------------------
+   # now use the threshold function to detect thresholds
+   # --------------------------------------------------
+  
+   threshold_example        <-  threshold(
+                                knotsIN    = t_knots,
+                                driver     = datIN$driver,
+                                response   = datIN$response,
+                                boot_nobs  = boot_nobsIN,
+                                rndN       = rndNIN,
+                                method     = methodIN,
+                                boot_n     = nitrIN)
+
+    plot_threshold(threshold_example)
 
 ```
 
@@ -936,5 +900,65 @@ rmd2md(rmd_fl = "Tipping_points_getstarted",md_fl = "README")
 
 ```
 
+<!-- ### Download the data from Holsman et al. 2020 -->
+<!-- ```{r thresholds, echo =T, eval=F, include = T} -->
 
+<!--     cat("The download takes a few mins (large data files: 251.5 MB)...\n") -->
+
+<!--     url <-   "https://figshare.com/ndownloader/files/24115769?private_link=81007e2dd5edee0a5a7a" -->
+<!--     options(timeout = max(300, getOption("timeout"))) -->
+
+<!--     dest_path  <-  file.path(main,"Data/data.zip") -->
+<!--     download.file(url=url, destfile=dest_path,method="libcurl") -->
+
+<!--     unzip(dest_path, exdir = ".",overwrite=T) -->
+
+<!-- ``` -->
+
+<!-- ### Explore the threshold function  -->
+
+<!-- ```{r threshold_STEP0,eval=T,include=T,echo=T, results='hide',message=FALSE} -->
+
+<!--    source("R/make.R")  # set up the Rcode and load packages and data -->
+
+<!--    head(risk12)  # preview the risk table for "No cap" simulations -->
+<!--    head(risk13)  # preview the risk table for "2 MT cap" simulations -->
+<!--    C_thresh_12_1$thrsh_x # Temperature tipping point for pollock under "No cap" simulations -->
+<!--    C_thresh_12_2$thrsh_x # Temperature tipping point for p cod under "No cap" simulations -->
+<!--    C_thresh_12_3$thrsh_x # No tipping point was found for arrowtooth under "No cap" simulations -->
+
+<!--  Biom_tmp <- list("No Cap" = c(  -->
+<!--    B_thresh_12_1$thrsh_x, -->
+<!--    B_thresh_12_2$thrsh_x, -->
+<!--    B_thresh_12_3$thrsh_x), -->
+<!--    "2 MT Cap" = c(  -->
+<!--    B_thresh_13_1$thrsh_x, -->
+<!--    B_thresh_13_2$thrsh_x, -->
+<!--    B_thresh_13_3$thrsh_x)) -->
+
+<!--  tmp <- list("No Cap" = c(  -->
+<!--    C_thresh_12_1$thrsh_x, -->
+<!--    C_thresh_12_2$thrsh_x, -->
+<!--    C_thresh_12_3$thrsh_x), -->
+<!--    "2 MT Cap" = c(  -->
+<!--    C_thresh_13_1$thrsh_x, -->
+<!--    C_thresh_13_2$thrsh_x, -->
+<!--    C_thresh_13_3$thrsh_x)) -->
+
+<!--  # get mean and var for tipping points: -->
+<!--  mean(as.numeric(unlist(tmp))) -->
+<!--  sd(as.numeric(unlist(tmp))) -->
+
+<!--  # double check: -->
+<!--  threshIN     <- C_thresh_13_2 -->
+<!--  thrsh2_all   <- intersect(threshIN$signif2,threshIN$ix_pks) -->
+<!--  df2_qnt      <- threshIN$df2_qnt -->
+<!--  df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_mn[thrsh2_all])  ==  -->
+<!--                                   max(abs(df2_qnt$smoothed_mn[thrsh2_all])) ) ] ) ] -->
+<!--  df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_dwn[thrsh2_all]) ==  -->
+<!--                                   max(abs(df2_qnt$smoothed_dwn[thrsh2_all])) )])  ] -->
+<!--  df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_up[thrsh2_all])  ==  -->
+<!--                                   max(abs(df2_qnt$smoothed_up[thrsh2_all]))  )])  ] -->
+
+<!-- ``` -->
 

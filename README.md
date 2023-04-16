@@ -170,65 +170,6 @@ derivative of the smoothing function (Buckland, 1984). A significant
 trend *Ŝ*(*x*)′ or threshold *Ŝ*(*x*)″ was identified when the 95% CI
 crossed zero for either derivative.”*
 
-### Download the data from Holsman et al. 2020
-
-``` r
-    cat("The download takes a few mins (large data files: 251.5 MB)...\n")
-
-    url <-   "https://figshare.com/ndownloader/files/24115769?private_link=81007e2dd5edee0a5a7a"
-    options(timeout = max(300, getOption("timeout")))
-    
-    dest_path  <-  file.path(main,"Data/data.zip")
-    download.file(url=url, destfile=dest_path,method="libcurl")
-    
-    unzip(dest_path, exdir = ".",overwrite=T)
-```
-
-### Explore the threshold function
-
-``` r
-   source("R/make.R")  # set up the Rcode and load packages and data
-
-   head(risk12)  # preview the risk table for "No cap" simulations
-   head(risk13)  # preview the risk table for "2 MT cap" simulations
-   C_thresh_12_1$thrsh_x # Temperature tipping point for pollock under "No cap" simulations
-   C_thresh_12_2$thrsh_x # Temperature tipping point for p cod under "No cap" simulations
-   C_thresh_12_3$thrsh_x # No tipping point was found for arrowtooth under "No cap" simulations
-   
- Biom_tmp <- list("No Cap" = c( 
-   B_thresh_12_1$thrsh_x,
-   B_thresh_12_2$thrsh_x,
-   B_thresh_12_3$thrsh_x),
-   "2 MT Cap" = c( 
-   B_thresh_13_1$thrsh_x,
-   B_thresh_13_2$thrsh_x,
-   B_thresh_13_3$thrsh_x))
- 
- tmp <- list("No Cap" = c( 
-   C_thresh_12_1$thrsh_x,
-   C_thresh_12_2$thrsh_x,
-   C_thresh_12_3$thrsh_x),
-   "2 MT Cap" = c( 
-   C_thresh_13_1$thrsh_x,
-   C_thresh_13_2$thrsh_x,
-   C_thresh_13_3$thrsh_x))
- 
- # get mean and var for tipping points:
- mean(as.numeric(unlist(tmp)))
- sd(as.numeric(unlist(tmp)))
-   
- # double check:
- threshIN     <- C_thresh_13_2
- thrsh2_all   <- intersect(threshIN$signif2,threshIN$ix_pks)
- df2_qnt      <- threshIN$df2_qnt
- df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_mn[thrsh2_all])  == 
-                                  max(abs(df2_qnt$smoothed_mn[thrsh2_all])) ) ] ) ]
- df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_dwn[thrsh2_all]) == 
-                                  max(abs(df2_qnt$smoothed_dwn[thrsh2_all])) )])  ]
- df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_up[thrsh2_all])  == 
-                                  max(abs(df2_qnt$smoothed_up[thrsh2_all]))  )])  ]
-```
-
 ### Step 1: Fit gam()
 
 Let’s first explore the tipping point calculations using Pacific cod
@@ -236,8 +177,9 @@ biomass (‘B_thresh_12_2’) or catch (‘C_thresh_12_2’) for scenarios with
 the 2 MT cap effects (’\_13_1’).
 
 ``` r
-  # change in change from persistence scenario for P. cod with effects of 2 MT cap
-  datIN        <- C_thresh_13_2$datIN  
+  # Load setup, packages, functions and data
+  source("R/make.R") 
+
   # Alternatives to play around with:
   # ------------------------------------
   # change in catch from persistence scenario for P. cod without effects of 2 MT cap
@@ -248,30 +190,45 @@ the 2 MT cap effects (’\_13_1’).
   # datIN        <- C_thresh_12_1$datIN  
 
 
-  datIN$rand   <- 1
+  # change in catch from persistence scenario for P. cod with effects of 2 MT cap
+  datIN <- C_thresh_13_2$datIN  
+  
+  # set the response variable to the % difference in catch (or biomass) relative to the 
+  # persistence scenario, set the driver to TempC
+  datIN <- datIN%>%dplyr::select(Year,
+                                 driver   = TempC,
+                                 response = delta_var_prcnt,
+                                 MC_n , Scenario) 
+  
+  # Add columns for grouping (optional for autocorrelation grouping in gamm)
+  datIN$rand   <- 1    
   datIN$group  <- paste0(datIN$MC_n,"_",datIN$Scenario,"_", datIN$sp)
   datIN$groupN <- as.numeric(as.factor(datIN$group)) 
   datIN$YearN  <- datIN$Year- min(datIN$Year)+1
-  x     <- seq(-3,10,.1) 
   
   # Based on code from E. Hazen and M. Hunsicker WG36 (PICES)
-  
 
   # Fit gam with and without autocorrelation 
   #------------------------------------
-  tmp_gam   <-  gam(delta_var_prcnt ~ s(TempC,k=t_knots,bs="tp"),data = datIN)
+  tmp_gam          <- gam(response ~ s(driver,k=t_knots,bs="tp"),data = datIN)
   datIN$dev.resid  <- residuals(tmp_gam,type='deviance')
+  
+  # # AR gam
+  # tmp_gamAR        <-  gamm(response ~ s(TempC,k=t_knots,bs="tp"),
+  #                           random=list(groupN=~1),correlation=corAR1(form=~YearN),data = datIN)
+  # datIN$dev.resid  <- residuals(tmp_gamAR$gam,type='deviance')
+
 
   # fit the null model
-  null      <- gam(delta_var_prcnt ~ 1,family='gaussian',data = datIN)
+  null      <- gam(response ~ 1,family='gaussian',data = datIN)
   dr        <- sum(residuals(tmp_gam)^2)
   dn0       <- sum(residuals(null)^2)
   gam.dev.expl    <- (dn0-dr)/dn0
   
   # from here out use the non-AR gam for the demo
-
-  hat       <-  predict(tmp_gam,se.fit=TRUE, newdata = data.frame(TempC=x) )
-  dd        <-  datIN%>%mutate(TempC = round(TempC,2) )%>%select(TempC, delta_var_prcnt)
+  x <-  seq(-3,10,.1) # newdata TempC vector
+  hat       <-  predict(tmp_gam,se.fit=TRUE, newdata = data.frame(driver=x) )
+  dd        <-  datIN%>%mutate(driver = round(driver,2) )%>%select(driver, response)
   dd$num    <-  1:length(dd[,1])
 ```
 
@@ -297,6 +254,7 @@ the residuals.
   # boot_nobsIN <- 500 # uncomment this line if the code is slow
     
   # pre allocate NA Matrix
+    x <-  seq(-3,10,.1) # newdata TempC vector
     Deriv1 <- 
     Deriv2 <- 
     hatFit <- 
@@ -324,13 +282,13 @@ the residuals.
       boot_nobs   <- nobs
     
     bootd         <- sample_n(dd,boot_nobs,replace = TRUE)
-    tmpgam        <- gam(delta_var_prcnt~s(TempC,k=knotsIN,bs="tp"),data = bootd)
+    tmpgam        <- gam(response~s(driver,k=knotsIN,bs="tp"),data = bootd)
     tmpd          <- deriv2(tmpgam,simdat=x)
     gmlist[[int]] <- tmpgam
     Deriv1[int,]  <- tmpd$fd_d1
     Deriv2[int,]  <- tmpd$fd_d2
-    hatFit[int,]  <- predict(tmpgam,se.fit=TRUE,newdata=data.frame(TempC=x))$fit
-    hatse[int,]   <- predict(tmpgam,se.fit=TRUE,newdata=data.frame(TempC=x))$se
+    hatFit[int,]  <- predict(tmpgam,se.fit=TRUE,newdata=data.frame(driver=x))$fit
+    hatse[int,]   <- predict(tmpgam,se.fit=TRUE,newdata=data.frame(driver=x))$se
     
   }
 ```
@@ -381,9 +339,9 @@ the residuals.
   hat_qnt$smoothed_up  <- predict(loess(up ~ tmp, data=hat_qnt, span=spanIN)) 
 
    ggplot(rbind(
-     hat_qnt%>%select(TempC=tmp,up, mn, dwn)%>%mutate(method="not smoothed"),
-     hat_qnt%>%select(TempC=tmp,up=smoothed_up, mn=smoothed_mn, dwn=smoothed_dwn)%>%mutate(method="smoothed")))+
-  geom_ribbon(aes(x=TempC, ymin=dwn, ymax=up,fill=method))+
+     hat_qnt%>%select(datIN=tmp,up, mn, dwn)%>%mutate(method="not smoothed"),
+     hat_qnt%>%select(datIN=tmp,up=smoothed_up, mn=smoothed_mn, dwn=smoothed_dwn)%>%mutate(method="smoothed")))+
+  geom_ribbon(aes(x=datIN, ymin=dwn, ymax=up,fill=method))+
      facet_grid(method~.)+
   scale_fill_viridis_d(begin = .8, end=0)+
   theme_minimal()
@@ -411,9 +369,7 @@ the residuals.
     xx        <- round(xx,rndN2)
     delta     <- rep(NA,nn)
     updn      <- c(0, diff(sign(xx)))
-    #updn[xx==0]<-0
     ix        <- which(updn != 0)
-    #(xx[ix] + xx[ix-1])/2
     sign(updn)[ix]
     delta[ix] <- 1
     return(list(delta=delta,ix=ix,updn=updn,xx=xx))
@@ -428,9 +384,9 @@ the residuals.
   
   
   ggplot(rbind(
-    hat_qnt%>%select(TempC = tmp,up=smoothed_up, mn=smoothed_mn, dwn=smoothed_dwn)%>%mutate(method="a) smoothed gam (s(x))"),
-    df1_qnt%>%select(TempC = tmp,up=smoothed_up, mn=smoothed_mn, dwn=smoothed_dwn)%>%mutate(method="b) First Deriv (s'(x)")))+
-  geom_ribbon(aes(x=TempC, ymin=dwn, ymax=up,fill=method))+facet_grid(method~.,scales="free_y")+
+    hat_qnt%>%select(datIN = tmp,up=smoothed_up, mn=smoothed_mn, dwn=smoothed_dwn)%>%mutate(method="a) smoothed gam (s(x))"),
+    df1_qnt%>%select(datIN = tmp,up=smoothed_up, mn=smoothed_mn, dwn=smoothed_dwn)%>%mutate(method="b) First Deriv (s'(x)")))+
+  geom_ribbon(aes(x=datIN, ymin=dwn, ymax=up,fill=method))+facet_grid(method~.,scales="free_y")+
   scale_fill_viridis_d(begin = .8, end=.1)+
   theme_minimal()
 ```
@@ -438,6 +394,7 @@ the residuals.
 <img src="Tipping_points_getstarted_files/figure-markdown_github/threshold_STEP3-3.png" style="display: block; margin: auto;" />
 
 ``` r
+  # find thresholds
   pks1    <- sort(c(findPeaks(df1_qnt$smoothed_mn),findPeaks(-df1_qnt$smoothed_mn)))
   signif1 <- which(!data.table::between(0, df1_qnt$dwn, df1_qnt$up, incbounds=TRUE))
   thrsh1  <- intersect(which(!data.table::between(0, df1_qnt$dwn, df1_qnt$up, incbounds=TRUE)),pks1)
@@ -464,34 +421,41 @@ the residuals.
   
    
    plot1<- ggplot(rbind(
-    hat_qnt%>%select(TempC = tmp,up=smoothed_up, mn=smoothed_mn, 
+    hat_qnt%>%select(driver = tmp,up=smoothed_up, mn=smoothed_mn, 
                      dwn=smoothed_dwn,sig)%>%mutate(method="a) smoothed gam (s(x))"),
-    df1_qnt%>%select(TempC = tmp,up=smoothed_up, mn=smoothed_mn, 
+    df1_qnt%>%select(driver = tmp,up=smoothed_up, mn=smoothed_mn, 
                      dwn=smoothed_dwn,sig)%>%mutate(method="b) First Deriv (s'(x)"),
-    df2_qnt%>%select(TempC = tmp,up=smoothed_up, mn=smoothed_mn,
+    df2_qnt%>%select(driver = tmp,up=smoothed_up, mn=smoothed_mn,
                      dwn=smoothed_dwn,sig)%>%mutate(method="c) Second Deriv (s''(x)")))+
-     geom_ribbon(aes(x=TempC, ymin=dwn, ymax=up,fill=method))+
+     geom_ribbon(aes(x=driver, ymin=dwn, ymax=up,fill=method))+
      facet_grid(method~.,scales="free_y")+
      geom_hline(yintercept=0,color="white")+
      scale_fill_viridis_d(begin = .8, end=.1)+
      theme_minimal()
    
-  plot1 + geom_mark_rect(aes(x=TempC, y=up,fill = sig, label = "sig. range"))+
+  plot1 + geom_mark_rect(aes(x=driver, y=up,fill = sig, label = "sig. range"))+
     geom_vline (xintercept =df2_qnt$tmp[thrsh2], color = "red")
 ```
 
 <img src="Tipping_points_getstarted_files/figure-markdown_github/threshold_STEP3-4.png" style="display: block; margin: auto;" />
 
+### Use the threshold() and plot_threshold() functions
+
 ``` r
-  # now use the threshold function to do the above:
+   # --------------------------------------------------
+   # now use the threshold function to detect thresholds
+   # --------------------------------------------------
   
-   B_thresh_12_2_test  <-  threshold(datIN = datIN,
-                                knotsIN=t_knots,
-                                simul_set=c(5,6,8,9,10,11),
-                                boot_nobs=boot_nobsIN,
-                                rndN=rndNIN,
-                                method=methodIN,
-                                boot_n=nitrIN)
+   threshold_example        <-  threshold(
+                                knotsIN    = t_knots,
+                                driver     = datIN$driver,
+                                response   = datIN$response,
+                                boot_nobs  = boot_nobsIN,
+                                rndN       = rndNIN,
+                                method     = methodIN,
+                                boot_n     = nitrIN)
+
+    plot_threshold(threshold_example)
 ```
 
 ## Integrative Resilience Analysis (IRA)
@@ -1058,3 +1022,51 @@ p1
 ``` r
 ####### Interpretation from the presentation and Sguotti et al., 2022 (Journal of Animal Ecology)
 ```
+
+<!-- ### Download the data from Holsman et al. 2020 -->
+<!-- ```{r thresholds, echo =T, eval=F, include = T} -->
+<!--     cat("The download takes a few mins (large data files: 251.5 MB)...\n") -->
+<!--     url <-   "https://figshare.com/ndownloader/files/24115769?private_link=81007e2dd5edee0a5a7a" -->
+<!--     options(timeout = max(300, getOption("timeout"))) -->
+<!--     dest_path  <-  file.path(main,"Data/data.zip") -->
+<!--     download.file(url=url, destfile=dest_path,method="libcurl") -->
+<!--     unzip(dest_path, exdir = ".",overwrite=T) -->
+<!-- ``` -->
+<!-- ### Explore the threshold function  -->
+<!-- ```{r threshold_STEP0,eval=T,include=T,echo=T, results='hide',message=FALSE} -->
+<!--    source("R/make.R")  # set up the Rcode and load packages and data -->
+<!--    head(risk12)  # preview the risk table for "No cap" simulations -->
+<!--    head(risk13)  # preview the risk table for "2 MT cap" simulations -->
+<!--    C_thresh_12_1$thrsh_x # Temperature tipping point for pollock under "No cap" simulations -->
+<!--    C_thresh_12_2$thrsh_x # Temperature tipping point for p cod under "No cap" simulations -->
+<!--    C_thresh_12_3$thrsh_x # No tipping point was found for arrowtooth under "No cap" simulations -->
+<!--  Biom_tmp <- list("No Cap" = c(  -->
+<!--    B_thresh_12_1$thrsh_x, -->
+<!--    B_thresh_12_2$thrsh_x, -->
+<!--    B_thresh_12_3$thrsh_x), -->
+<!--    "2 MT Cap" = c(  -->
+<!--    B_thresh_13_1$thrsh_x, -->
+<!--    B_thresh_13_2$thrsh_x, -->
+<!--    B_thresh_13_3$thrsh_x)) -->
+<!--  tmp <- list("No Cap" = c(  -->
+<!--    C_thresh_12_1$thrsh_x, -->
+<!--    C_thresh_12_2$thrsh_x, -->
+<!--    C_thresh_12_3$thrsh_x), -->
+<!--    "2 MT Cap" = c(  -->
+<!--    C_thresh_13_1$thrsh_x, -->
+<!--    C_thresh_13_2$thrsh_x, -->
+<!--    C_thresh_13_3$thrsh_x)) -->
+<!--  # get mean and var for tipping points: -->
+<!--  mean(as.numeric(unlist(tmp))) -->
+<!--  sd(as.numeric(unlist(tmp))) -->
+<!--  # double check: -->
+<!--  threshIN     <- C_thresh_13_2 -->
+<!--  thrsh2_all   <- intersect(threshIN$signif2,threshIN$ix_pks) -->
+<!--  df2_qnt      <- threshIN$df2_qnt -->
+<!--  df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_mn[thrsh2_all])  ==  -->
+<!--                                   max(abs(df2_qnt$smoothed_mn[thrsh2_all])) ) ] ) ] -->
+<!--  df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_dwn[thrsh2_all]) ==  -->
+<!--                                   max(abs(df2_qnt$smoothed_dwn[thrsh2_all])) )])  ] -->
+<!--  df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_up[thrsh2_all])  ==  -->
+<!--                                   max(abs(df2_qnt$smoothed_up[thrsh2_all]))  )])  ] -->
+<!-- ``` -->
