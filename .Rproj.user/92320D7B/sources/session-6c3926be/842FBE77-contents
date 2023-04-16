@@ -183,6 +183,7 @@ threshold<-function(
   
   hat_qnt$sig <-  df1_qnt$sig <- FALSE
   df2_qnt$sig <- !between(0, df2_qnt$dwn, df2_qnt$up, incbounds=TRUE)
+  df2_qnt$sig[!df2_qnt$sig] <-NA
   signif2     <- which(!between(0, df2_qnt$dwn, df2_qnt$up, incbounds=TRUE))
   #signif2  <- which(!between(0, df2_qnt$dwn, df2_qnt$up, incbounds=TRUE))
   thrsh2_all   <- intersect(signif2,pks2)

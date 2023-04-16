@@ -198,7 +198,7 @@ the 2 MT cap effects (’\_13_1’).
   datIN <- datIN%>%dplyr::select(Year,
                                  driver   = TempC,
                                  response = delta_var_prcnt,
-                                 MC_n , Scenario) 
+                                 MC_n , Scenario)
   
   # Add columns for grouping (optional for autocorrelation grouping in gamm)
   datIN$rand   <- 1    
@@ -410,14 +410,16 @@ the residuals.
   
 
    
-  hat_qnt$sig <-  df1_qnt$sig <- FALSE
+  hat_qnt$sig <- df1_qnt$sig <- df2_qnt$sig <-NA
   df2_qnt$sig <- !between(0, df2_qnt$dwn, df2_qnt$up, incbounds=TRUE)
+  df2_qnt$sig[!df2_qnt$sig] <-NA
   signif2     <- which(!between(0, df2_qnt$dwn, df2_qnt$up, incbounds=TRUE))
   thrsh2_all  <- intersect(signif2,pks2)
-  thrsh2      <-  which(1==10)
+  thrsh2      <- which(1==10)
  
   if(length(thrsh2_all)>0)
-    thrsh2<-mean(thrsh2_all[which(abs(df2_qnt$smoothed_mn[thrsh2_all])==max(abs(df2_qnt$smoothed_mn[thrsh2_all])))],na.rm=T)
+    thrsh2<-mean(thrsh2_all[which(abs(df2_qnt$smoothed_mn[thrsh2_all])==
+                                    max(abs(df2_qnt$smoothed_mn[thrsh2_all])))],na.rm=T)
   
    
    plot1<- ggplot(rbind(
@@ -427,14 +429,15 @@ the residuals.
                      dwn=smoothed_dwn,sig)%>%mutate(method="b) First Deriv (s'(x)"),
     df2_qnt%>%select(driver = tmp,up=smoothed_up, mn=smoothed_mn,
                      dwn=smoothed_dwn,sig)%>%mutate(method="c) Second Deriv (s''(x)")))+
-     geom_ribbon(aes(x=driver, ymin=dwn, ymax=up,fill=method))+
-     facet_grid(method~.,scales="free_y")+
-     geom_hline(yintercept=0,color="white")+
-     scale_fill_viridis_d(begin = .8, end=.1)+
-     theme_minimal()
+    geom_ribbon(aes(x=driver, ymin=dwn, ymax=up,fill=method))+
+    facet_grid(method~.,scales="free_y")+
+    geom_hline(yintercept=0,color="white")+
+    scale_fill_viridis_d(begin = .8, end=.1)+
+    theme_minimal()
    
-  plot1 + geom_mark_rect(aes(x=driver, y=up,fill = sig, label = "sig. range"))+
-    geom_vline (xintercept =df2_qnt$tmp[thrsh2], color = "red")
+  plot1 + geom_mark_rect(aes(x=driver, y=up,fill = sig,label = "sig. range"),color=FALSE)+
+    geom_vline (xintercept =df2_qnt$tmp[thrsh2], color = "red") +
+    theme(legend.position="none")+ ylab("")
 ```
 
 <img src="Tipping_points_getstarted_files/figure-markdown_github/threshold_STEP3-4.png" style="display: block; margin: auto;" />

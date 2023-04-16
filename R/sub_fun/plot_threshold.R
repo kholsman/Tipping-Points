@@ -29,8 +29,9 @@ plot_threshold <- function(thresh){
     scale_fill_viridis_d(begin = .8, end=.1)+
     theme_minimal()
   
-  plot1 + geom_mark_rect(aes(x=driver, y=up,fill = sig, label = "sig. range"))+
-    geom_vline (xintercept = thresh$df2_qnt$tmp[thrsh2], color = "red")
+  plot1 + geom_mark_rect(aes(x=driver, y=up,fill = sig,label = "sig. range"),color=FALSE)+
+    geom_vline (xintercept = thresh$df2_qnt$tmp[thrsh2], color = "red") +
+    theme(legend.position="none")+ ylab("")
   
   
 }

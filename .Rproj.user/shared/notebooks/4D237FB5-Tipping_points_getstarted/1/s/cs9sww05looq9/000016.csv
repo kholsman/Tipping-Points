@@ -20,15 +20,6 @@
 "0","# copy and paste this into R window (won't work within markdown)"
 "0","rmd2md(rmd_fl = ""Tipping_points_getstarted"",md_fl = ""README"")"
 "2","
-Attaching package: ‘rmarkdown’
-
-"
-"2","The following object is masked from ‘package:processx’:
-
-    run
-
-"
-"2","
 
 processing file: Tipping_points_getstarted.Rmd
 "
