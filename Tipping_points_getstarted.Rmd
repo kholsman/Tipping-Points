@@ -175,7 +175,7 @@ From Large et al. 2013:
 
 ### Explore the threshold function 
 
-```{r threshold_STEP0,eval=T,include=T,echo=T, results='hide',message=FALSE}
+```{r threshold_STEP0,eval=T,include=F,echo=T, results='hide',message=FALSE}
 
    source("R/make.R")  # set up the Rcode and load packages and data
 
@@ -242,6 +242,7 @@ Let's first explore the tipping point calculations using Pacific cod biomass ('B
   datIN$group  <- paste0(datIN$MC_n,"_",datIN$Scenario,"_", datIN$sp)
   datIN$groupN <- as.numeric(as.factor(datIN$group)) 
   datIN$YearN  <- datIN$Year- min(datIN$Year)+1
+  datIN$driver <- datIN$TempC
   x     <- seq(-3,10,.1) 
   
   # Based on code from E. Hazen and M. Hunsicker WG36 (PICES)
@@ -249,7 +250,7 @@ Let's first explore the tipping point calculations using Pacific cod biomass ('B
 
   # Fit gam with and without autocorrelation 
   #------------------------------------
-  tmp_gam   <-  gam(delta_var_prcnt ~ s(TempC,k=t_knots,bs="tp"),data = datIN)
+  tmp_gam   <-  gam(delta_var_prcnt ~ s(driver,k=t_knots,bs="tp"),data = datIN)
   datIN$dev.resid  <- residuals(tmp_gam,type='deviance')
 
   # fit the null model
@@ -260,8 +261,8 @@ Let's first explore the tipping point calculations using Pacific cod biomass ('B
   
   # from here out use the non-AR gam for the demo
 
-  hat       <-  predict(tmp_gam,se.fit=TRUE, newdata = data.frame(TempC=x) )
-  dd        <-  datIN%>%mutate(TempC = round(TempC,2) )%>%select(TempC, delta_var_prcnt)
+  hat       <-  predict(tmp_gam,se.fit=TRUE, newdata = data.frame(driver=x) )
+  dd        <-  datIN%>%mutate(driver = round(TempC,2) )%>%select(driver, delta_var_prcnt)
   dd$num    <-  1:length(dd[,1])
   
 ```
@@ -308,13 +309,13 @@ For pressure–state relationships identified as nonlinear, we define the locati
       boot_nobs   <- nobs
     
     bootd         <- sample_n(dd,boot_nobs,replace = TRUE)
-    tmpgam        <- gam(delta_var_prcnt~s(TempC,k=knotsIN,bs="tp"),data = bootd)
+    tmpgam        <- gam(delta_var_prcnt~s(driver,k=knotsIN,bs="tp"),data = bootd)
     tmpd          <- deriv2(tmpgam,simdat=x)
     gmlist[[int]] <- tmpgam
     Deriv1[int,]  <- tmpd$fd_d1
     Deriv2[int,]  <- tmpd$fd_d2
-    hatFit[int,]  <- predict(tmpgam,se.fit=TRUE,newdata=data.frame(TempC=x))$fit
-    hatse[int,]   <- predict(tmpgam,se.fit=TRUE,newdata=data.frame(TempC=x))$se
+    hatFit[int,]  <- predict(tmpgam,se.fit=TRUE,newdata=data.frame(driver=x))$fit
+    hatse[int,]   <- predict(tmpgam,se.fit=TRUE,newdata=data.frame(driver=x))$se
     
   }
   

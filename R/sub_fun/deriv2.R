@@ -17,7 +17,7 @@ deriv2 <- function(gam_mod,simdat=x){
   DF1  <- gam_mod$model
   eps  <- 1e-7
   # new data for prediction
-  newDF <- with(DF1, data.frame(TempC = simdat))
+  newDF <- with(DF1, data.frame(driver = simdat))
   
   # prediction of smoothed estimates at each unique year value
   # with standard error    
@@ -35,7 +35,7 @@ deriv2 <- function(gam_mod,simdat=x){
   
   # first derivative
   fd_d1  <- -1*Xp %*% coef(gam_mod)
-  D1_dat <- data.frame(TempC=newDF$TempC,y=fd_d1)[order(newDF$TempC),]
+  D1_dat <- data.frame(driver=newDF$driver,y=fd_d1)[order(newDF$driver),]
   
   # plot(D1_dat[,1],D1_dat[,2],type="l",lwd=2, xlim=c(-3,3),ylim=c(-2,2))
   
@@ -48,7 +48,7 @@ deriv2 <- function(gam_mod,simdat=x){
   # second derivative
   fd_d2      <- Xpp %*% coef(gam_mod)
   
-  D2_dat     <- data.frame(TempC=newDF$TempC,y=fd_d2)[order(newDF$TempC),]
+  D2_dat     <- data.frame(driver=newDF$driver,y=fd_d2)[order(newDF$driver),]
   # plot(D2_dat[,1],D2_dat[,2],type="l",lwd=2, xlim=c(-3,3),ylim=c(-2,2))
   
   return(list(newDF=newDF,fd_d1=as.numeric(fd_d1),fd_d2=as.numeric(fd_d2)))
